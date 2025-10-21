@@ -1,0 +1,45 @@
+@import 'bootstrap/scss/bootstrap';
+
+:root {
+    --tvu-primary: #0066cc;
+    --tvu-secondary: #6c757d;
+    --tvu-success: #28a745;
+    --tvu-danger: #dc3545;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: var(--tvu-primary) !important;
+}
+
+.btn-tvu-primary {
+    background-color: var(--tvu-primary);
+    border-color: var(--tvu-primary);
+    color: white;
+}
+
+.btn-tvu-primary:hover {
+    background-color: #0052a3;
+    border-color: #0052a3;
+}
+
+.card-document {
+    transition: transform 0.2s;
+}
+
+.card-document:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.badge-free {
+    background-color: var(--tvu-success);
+}
+
+.badge-sale {
+    background-color: var(--tvu-primary);
+}
