@@ -5,13 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\BlogComment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
 {
 	public function index()
 	{
-		$blogs = Blog::with('user')->latest()->paginate(10);
-		return view('blogs.index', compact('blogs'));
+		$blogs = Blog::with('user')
+			->withCount('likes')
+			->latest()
+			->paginate(10);
+
+		// user-specific liked/saved ids to paint buttons on listing
+		$likedIds = $savedIds = collect();
+		if (auth()->check()) {
+			$uid = auth()->id();
+			$likedIds = DB::table('blog_likes')->where('user_id', $uid)->pluck('blog_id');
+			$savedIds = DB::table('blog_saves')->where('user_id', $uid)->pluck('blog_id');
+		}
+		return view('blogs.index', compact('blogs','likedIds','savedIds'));
 	}
 
 	public function create()
@@ -38,8 +50,15 @@ class BlogController extends Controller
 
 	public function show(Blog $blog)
 	{
-		$blog->load(['user', 'comments.user']);
-		return view('blogs.show', compact('blog'));
+		$blog->load(['user', 'comments.user'])
+			 ->loadCount('likes');
+		$liked = $saved = false;
+		if (auth()->check()) {
+			$uid = auth()->id();
+			$liked = DB::table('blog_likes')->where(['blog_id'=>$blog->id,'user_id'=>$uid])->exists();
+			$saved = DB::table('blog_saves')->where(['blog_id'=>$blog->id,'user_id'=>$uid])->exists();
+		}
+		return view('blogs.show', compact('blog','liked','saved'));
 	}
 
 	public function addComment(Request $request, Blog $blog)
@@ -51,6 +70,32 @@ class BlogController extends Controller
 			'noi_dung' => $request->input('noi_dung'),
 		]);
 		return back()->with('status', 'Đã bình luận');
+	}
+
+	public function toggleLike(Blog $blog)
+	{
+		abort_unless(auth()->check(), 403);
+		$uid = auth()->id();
+		$exists = DB::table('blog_likes')->where(['blog_id'=>$blog->id,'user_id'=>$uid])->exists();
+		if ($exists) {
+			DB::table('blog_likes')->where(['blog_id'=>$blog->id,'user_id'=>$uid])->delete();
+		} else {
+			DB::table('blog_likes')->insert(['blog_id'=>$blog->id,'user_id'=>$uid,'created_at'=>now(),'updated_at'=>now()]);
+		}
+		return back();
+	}
+
+	public function toggleSave(Blog $blog)
+	{
+		abort_unless(auth()->check(), 403);
+		$uid = auth()->id();
+		$exists = DB::table('blog_saves')->where(['blog_id'=>$blog->id,'user_id'=>$uid])->exists();
+		if ($exists) {
+			DB::table('blog_saves')->where(['blog_id'=>$blog->id,'user_id'=>$uid])->delete();
+		} else {
+			DB::table('blog_saves')->insert(['blog_id'=>$blog->id,'user_id'=>$uid,'created_at'=>now(),'updated_at'=>now()]);
+		}
+		return back();
 	}
 
 	public function edit(Blog $blog)

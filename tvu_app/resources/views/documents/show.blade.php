@@ -21,6 +21,12 @@
         @csrf
         <button class="btn btn-success">Thêm vào giỏ</button>
       </form>
+      @auth
+      <form method="POST" action="{{ route('documents.save', $document) }}" class="d-inline-block ms-2">
+        @csrf
+        <button class="btn btn-outline-secondary">{{ ($saved ?? false) ? 'Bỏ lưu' : 'Lưu' }}</button>
+      </form>
+      @endauth
     </div>
   </div>
 </div>

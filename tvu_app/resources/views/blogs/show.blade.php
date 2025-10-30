@@ -21,13 +21,50 @@
       <div class="prose max-w-none">
         {!! nl2br(e($blog->noi_dung)) !!}
       </div>
+
+      {{-- Actions: like, comment toggle, save --}}
+      <div class="mt-4 flex items-center gap-3">
+        @auth
+          <form method="POST" action="{{ route('blogs.like', $blog) }}">
+            @csrf
+            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border {{ $liked ? 'border-red-200 bg-red-50 text-red-600' : 'border-gray-200 text-gray-700 hover:bg-gray-50' }}">
+              <i data-feather="heart" class="w-4 h-4"></i>
+              <span>{{ $blog->likes_count }}</span>
+            </button>
+          </form>
+          <button id="toggleCommentBtn" type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50">
+            <i data-feather="message-circle" class="w-4 h-4"></i>
+            <span>Bình luận</span>
+          </button>
+          <form method="POST" action="{{ route('blogs.save', $blog) }}">
+            @csrf
+            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border {{ $saved ? 'border-indigo-200 bg-indigo-50 text-indigo-600' : 'border-gray-200 text-gray-700 hover:bg-gray-50' }}">
+              <i data-feather="bookmark" class="w-4 h-4"></i>
+              <span>Lưu</span>
+            </button>
+          </form>
+        @else
+          <a href="{{ route('login') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50">
+            <i data-feather="heart" class="w-4 h-4"></i>
+            <span>{{ $blog->likes_count }}</span>
+          </a>
+          <a href="{{ route('login') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50">
+            <i data-feather="message-circle" class="w-4 h-4"></i>
+            <span>Bình luận</span>
+          </a>
+          <a href="{{ route('login') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50">
+            <i data-feather="bookmark" class="w-4 h-4"></i>
+            <span>Lưu</span>
+          </a>
+        @endauth
+      </div>
     </div>
   </div>
 
-  <div class="mt-6 bg-white shadow rounded-lg p-6">
+  <div class="mt-6 bg-white shadow rounded-lg p-6" id="commentsSection">
     <h2 class="text-lg font-semibold mb-4">Bình luận</h2>
     @auth
-      <form method="POST" action="{{ route('blogs.comment', $blog) }}" class="mb-6">
+      <form method="POST" action="{{ route('blogs.comment', $blog) }}" class="mb-6 hidden" id="commentForm">
         @csrf
         <textarea name="noi_dung" rows="3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm" placeholder="Viết bình luận..."></textarea>
         <div class="mt-2 text-right">
@@ -51,3 +88,19 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  if (window.feather) window.feather.replace();
+  const btn = document.getElementById('toggleCommentBtn');
+  const form = document.getElementById('commentForm');
+  if (btn && form) {
+    btn.addEventListener('click', ()=>{
+      form.classList.toggle('hidden');
+      if (!form.classList.contains('hidden')) form.querySelector('textarea')?.focus();
+    });
+  }
+});
+</script>
+@endpush

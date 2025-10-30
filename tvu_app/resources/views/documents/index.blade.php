@@ -21,8 +21,17 @@
             <p class="mb-1"><small>{{ $doc->khoa->ten_khoa }} • {{ $doc->nganh->ten_nganh }} • {{ $doc->mon->ten_mon }}</small></p>
             <strong>{{ $doc->loai === 'cho' ? 'Miễn phí' : number_format($doc->gia).' đ' }}</strong>
           </div>
-          <div class="card-footer mt-auto text-end">
+          <div class="card-footer mt-auto d-flex justify-content-between align-items-center">
             <a href="{{ route('documents.show',$doc) }}" class="btn btn-primary btn-sm">Xem</a>
+            @auth
+              @php $isSaved = isset($savedIds) ? $savedIds->contains($doc->id) : false; @endphp
+              <form method="POST" action="{{ route('documents.save', $doc) }}" class="ms-2">
+                @csrf
+                <button class="btn btn-outline-secondary btn-sm {{ $isSaved ? 'active' : '' }}" type="submit">
+                  {{ $isSaved ? 'Bỏ lưu' : 'Lưu' }}
+                </button>
+              </form>
+            @endauth
           </div>
         </div>
       </div>

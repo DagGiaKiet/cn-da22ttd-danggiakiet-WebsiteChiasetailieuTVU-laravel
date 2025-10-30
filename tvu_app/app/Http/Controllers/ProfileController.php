@@ -29,7 +29,33 @@ class ProfileController extends Controller
 		}
 	$orders = $ordersQuery->paginate(10);
 
-		return view('profile.index', compact('user','documentsCount','ordersCount','blogsCount','orders','q','status'));
+	// Saved documents count
+	$savedDocumentsCount = 0;
+	$savedBlogsCount = 0;
+	if (method_exists($user, 'savedDocuments')) {
+		$savedDocumentsCount = $user->savedDocuments()->count();
+	}
+	if (method_exists($user, 'savedBlogs')) {
+		$savedBlogsCount = $user->savedBlogs()->count();
+	}
+
+	// If admin, prepare users list (existing + newest)
+	$users = null; $recentUsers = null; $userSearch = trim((string)$request->query('user_q',''));
+	$__me = auth()->user();
+	if ($__me && (($__me->role ?? null) === 'admin')) {
+		$usersQuery = \App\Models\User::query()->whereIn('role', ['student','admin']);
+		if ($userSearch !== '') {
+			$usersQuery->where(function($qq) use ($userSearch){
+				$qq->where('name','like',"%$userSearch%")
+					->orWhere('email','like',"%$userSearch%")
+					->orWhere('khoa','like',"%$userSearch%");
+			});
+		}
+		$users = $usersQuery->latest()->paginate(10)->appends(['user_q' => $userSearch]);
+		$recentUsers = \App\Models\User::whereIn('role', ['student','admin'])->latest()->take(5)->get();
+	}
+
+	return view('profile.index', compact('user','documentsCount','ordersCount','blogsCount','savedDocumentsCount','savedBlogsCount','orders','q','status','users','recentUsers','userSearch'));
 	}
 
 	public function edit()
@@ -60,6 +86,20 @@ class ProfileController extends Controller
 	{
 		$documents = \App\Models\Document::where('user_id', auth()->id())->latest()->paginate(10);
 		return view('profile.documents', compact('documents'));
+	}
+
+	public function savedDocuments()
+	{
+		$user = \App\Models\User::findOrFail(auth()->id());
+		$saved = $user->savedDocuments()->with(['user','khoa','nganh','mon'])->latest('document_saves.created_at')->paginate(10);
+		return view('profile.saved-documents', compact('saved'));
+	}
+
+	public function savedBlogs()
+	{
+		$user = \App\Models\User::findOrFail(auth()->id());
+		$saved = $user->savedBlogs()->with('user')->latest('blog_saves.created_at')->paginate(10);
+		return view('profile.saved-blogs', compact('saved'));
 	}
 
 	public function orders()

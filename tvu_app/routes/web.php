@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
+    Route::post('/documents/{document}/save', [DocumentController::class, 'toggleSave'])->name('documents.save');
     Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
@@ -62,6 +63,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/blogs/create', [BlogController::class, 'create'])->name('blogs.create');
     Route::post('/blogs', [BlogController::class, 'store'])->name('blogs.store');
     Route::post('/blogs/{blog}/comment', [BlogController::class, 'addComment'])->name('blogs.comment');
+    Route::post('/blogs/{blog}/like', [BlogController::class, 'toggleLike'])->name('blogs.like');
+    Route::post('/blogs/{blog}/save', [BlogController::class, 'toggleSave'])->name('blogs.save');
     Route::get('/blogs/{blog}/edit', [BlogController::class, 'edit'])->name('blogs.edit');
     Route::put('/blogs/{blog}', [BlogController::class, 'update'])->name('blogs.update');
     Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('blogs.destroy');
@@ -81,7 +84,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/profile/documents', [ProfileController::class, 'documents'])->name('profile.documents');
+    Route::get('/profile/saved-documents', [ProfileController::class, 'savedDocuments'])->name('profile.saved-documents');
     Route::get('/profile/orders', [ProfileController::class, 'orders'])->name('profile.orders');
+    Route::get('/profile/saved-blogs', [ProfileController::class, 'savedBlogs'])->name('profile.saved-blogs');
     // Profile actions similar to admin UX
     Route::post('/profile/lock', [ProfileController::class, 'lock'])->name('profile.lock');
     Route::post('/profile/unlock', [ProfileController::class, 'unlock'])->name('profile.unlock');
@@ -96,6 +101,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Users management
     Route::resource('users', AdminUserController::class);
+    Route::post('users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.update-role');
     
     // Documents management
     Route::resource('documents', AdminDocumentController::class);

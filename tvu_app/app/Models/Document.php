@@ -64,6 +64,14 @@ class Document extends Model
     }
 
     /**
+     * Users who saved/bookmarked this document
+     */
+    public function savedBy()
+    {
+        return $this->belongsToMany(User::class, 'document_saves')->withTimestamps();
+    }
+
+    /**
      * Check if document is free
      */
     public function isFree()

@@ -34,10 +34,34 @@
               </h2>
               <p class="text-gray-600 mb-4">{{ \Illuminate\Support\Str::limit(strip_tags($b->noi_dung), 180) }}</p>
               <div class="flex items-center justify-between">
-                <div class="flex space-x-2">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    <i data-feather="book" class="w-3 h-3 mr-1"></i> Bài viết
-                  </span>
+                <div class="flex items-center gap-2">
+                  @auth
+                    <form method="POST" action="{{ route('blogs.like', $b) }}">
+                      @csrf
+                      @php $isLiked = isset($likedIds) ? $likedIds->contains($b->id) : false; @endphp
+                      <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded border {{ $isLiked ? 'border-red-200 bg-red-50 text-red-600' : 'border-gray-200 text-gray-700 hover:bg-gray-50' }}">
+                        <i data-feather="heart" class="w-3 h-3"></i>
+                        <span class="text-xs">{{ $b->likes_count }}</span>
+                      </button>
+                    </form>
+                    <form method="POST" action="{{ route('blogs.save', $b) }}">
+                      @csrf
+                      @php $isSaved = isset($savedIds) ? $savedIds->contains($b->id) : false; @endphp
+                      <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded border {{ $isSaved ? 'border-indigo-200 bg-indigo-50 text-indigo-600' : 'border-gray-200 text-gray-700 hover:bg-gray-50' }}">
+                        <i data-feather="bookmark" class="w-3 h-3"></i>
+                        <span class="text-xs">Lưu</span>
+                      </button>
+                    </form>
+                  @else
+                    <a href="{{ route('login') }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-gray-200 text-gray-700 hover:bg-gray-50">
+                      <i data-feather="heart" class="w-3 h-3"></i>
+                      <span class="text-xs">{{ $b->likes_count }}</span>
+                    </a>
+                    <a href="{{ route('login') }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-gray-200 text-gray-700 hover:bg-gray-50">
+                      <i data-feather="bookmark" class="w-3 h-3"></i>
+                      <span class="text-xs">Lưu</span>
+                    </a>
+                  @endauth
                 </div>
                 <a class="text-primary hover:text-primary-700 font-medium" href="{{ route('blogs.show',$b) }}">Xem chi tiết</a>
               </div>

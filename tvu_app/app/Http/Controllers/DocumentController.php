@@ -7,13 +7,18 @@ use App\Models\Khoa;
 use App\Models\Nganh;
 use App\Models\Mon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DocumentController extends Controller
 {
 	public function index()
 	{
 		$documents = Document::with(['khoa','nganh','mon','user'])->latest()->paginate(12);
-		return view('documents.index', compact('documents'));
+		$savedIds = collect();
+		if (auth()->check()) {
+			$savedIds = DB::table('document_saves')->where('user_id', auth()->id())->pluck('document_id');
+		}
+		return view('documents.index', compact('documents','savedIds'));
 	}
 
 	public function create()
@@ -51,7 +56,11 @@ class DocumentController extends Controller
 	public function show(Document $document)
 	{
 		$document->load(['khoa','nganh','mon','user']);
-		return view('documents.show', compact('document'));
+		$saved = false;
+		if (auth()->check()) {
+			$saved = DB::table('document_saves')->where(['document_id'=>$document->id,'user_id'=>auth()->id()])->exists();
+		}
+		return view('documents.show', compact('document','saved'));
 	}
 
 	public function edit(Document $document)
@@ -98,6 +107,19 @@ class DocumentController extends Controller
 		abort_if($document->user_id !== auth()->id(), 403);
 		$document->delete();
 		return redirect()->route('documents.index')->with('status', 'Đã xóa tài liệu');
+	}
+
+	public function toggleSave(Document $document)
+	{
+		abort_unless(auth()->check(), 403);
+		$uid = auth()->id();
+		$exists = DB::table('document_saves')->where(['document_id'=>$document->id,'user_id'=>$uid])->exists();
+		if ($exists) {
+			DB::table('document_saves')->where(['document_id'=>$document->id,'user_id'=>$uid])->delete();
+		} else {
+			DB::table('document_saves')->insert(['document_id'=>$document->id,'user_id'=>$uid,'created_at'=>now(),'updated_at'=>now()]);
+		}
+		return back();
 	}
 }
 

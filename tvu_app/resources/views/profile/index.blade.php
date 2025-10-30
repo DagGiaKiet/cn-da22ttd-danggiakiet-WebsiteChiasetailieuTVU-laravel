@@ -12,7 +12,7 @@
   </div>
 
   {{-- Summary cards (admin-like) --}}
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <div class="text-sm text-gray-600">Tài liệu đã đăng</div>
       <div class="mt-1 text-2xl font-semibold">{{ $documentsCount ?? ($user->documents->count() ?? 0) }}</div>
@@ -24,6 +24,20 @@
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <div class="text-sm text-gray-600">Bài viết blog</div>
       <div class="mt-1 text-2xl font-semibold">{{ $blogsCount ?? ($user->blogs->count() ?? 0) }}</div>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <div class="text-sm text-gray-600">Tài liệu đã lưu</div>
+      <div class="mt-1 flex items-center justify-between">
+        <div class="text-2xl font-semibold">{{ $savedDocumentsCount ?? 0 }}</div>
+        <a href="{{ route('profile.saved-documents') }}" class="inline-flex items-center px-3 py-1.5 rounded-md text-white bg-blue-600 hover:bg-blue-700 text-sm">Xem</a>
+      </div>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <div class="text-sm text-gray-600">Bài viết đã lưu</div>
+      <div class="mt-1 flex items-center justify-between">
+        <div class="text-2xl font-semibold">{{ $savedBlogsCount ?? 0 }}</div>
+        <a href="{{ route('profile.saved-blogs') }}" class="inline-flex items-center px-3 py-1.5 rounded-md text-white bg-blue-600 hover:bg-blue-700 text-sm">Xem</a>
+      </div>
     </div>
   </div>
 
@@ -88,18 +102,20 @@
   @if($user->isAdmin())
   {{-- Admin-like: Quản lý tài khoản sinh viên --}}
   <div class="mt-6 bg-white shadow rounded-lg">
-    <div class="p-6 border-b border-gray-200">
-      <h2 class="text-xl font-semibold text-gray-900">Quản lý tài khoản sinh viên</h2>
-      <p class="mt-1 text-sm text-gray-500">Chỉ email @st.tvu.edu.vn được phép đăng ký</p>
-    </div>
-    <div class="px-6 py-4">
-      <div class="mb-4">
-        <div class="relative">
-          <input type="text" disabled placeholder="Tìm kiếm sinh viên..." class="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm text-gray-500 bg-gray-50" />
+    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900">Quản lý tài khoản sinh viên</h2>
+        <p class="mt-1 text-sm text-gray-500">Chỉ email @st.tvu.edu.vn được phép đăng ký</p>
+      </div>
+      <form method="GET" class="w-full md:w-auto md:flex items-center gap-2 md:justify-end">
+        <div class="relative w-full md:w-72">
+          <input type="text" name="user_q" value="{{ $userSearch ?? '' }}" placeholder="Tìm kiếm sinh viên..." class="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm" />
           <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.2-5.2M10 18a8 8 0 100-16 8 8 0 000 16z" /></svg>
         </div>
-      </div>
-
+        <button class="inline-flex items-center px-3 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 text-sm mt-2 md:mt-0">Tìm</button>
+      </form>
+    </div>
+    <div class="px-6 py-4">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -109,37 +125,50 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khoa</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->id }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $user->name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->email }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->khoa ?: '—' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $user->isActive() ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                  {{ $user->isActive() ? 'Hoạt động' : 'Đã khóa' }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <a href="{{ route('profile.edit') }}" class="text-blue-600 hover:underline mr-4">Sửa</a>
-                @if($user->isActive())
-                  <form method="POST" action="{{ route('profile.lock') }}" class="inline">
-                    @csrf
-                    <button class="text-red-600 hover:underline" type="submit">Khóa</button>
-                  </form>
-                @else
-                  <form method="POST" action="{{ route('profile.unlock') }}" class="inline">
-                    @csrf
-                    <button class="text-green-600 hover:underline" type="submit">Mở khóa</button>
-                  </form>
-                @endif
-              </td>
-            </tr>
+            @forelse(($users ?? []) as $u)
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $u->id }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $u->name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $u->email }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $u->khoa ?: '—' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  @php $isOnline = auth()->check() && auth()->id() === $u->id; @endphp
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $isOnline ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                    {{ $isOnline ? 'Hoạt động' : 'Không hoạt động' }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ optional($u->created_at)->format('d/m/Y H:i') }}</td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-sm text-gray-500">Chưa có tài khoản nào.</td>
+              </tr>
+            @endforelse
           </tbody>
         </table>
+      </div>
+      @if(isset($users) && method_exists($users, 'links'))
+        <div class="mt-4">{{ $users->links() }}</div>
+      @endif
+
+      {{-- Recent registrations --}}
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Tài khoản mới đăng ký</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          @forelse(($recentUsers ?? []) as $ru)
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="font-medium text-gray-900">{{ $ru->name }}</div>
+              <div class="text-sm text-gray-600">{{ $ru->email }}</div>
+              <div class="text-xs text-gray-500 mt-1">{{ optional($ru->created_at)->diffForHumans() }}</div>
+            </div>
+          @empty
+            <div class="text-sm text-gray-500">Chưa có đăng ký mới.</div>
+          @endforelse
+        </div>
       </div>
     </div>
   </div>

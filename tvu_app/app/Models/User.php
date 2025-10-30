@@ -105,4 +105,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(BlogComment::class);
     }
+
+    /**
+     * Documents this user saved/bookmarked
+     */
+    public function savedDocuments()
+    {
+        return $this->belongsToMany(Document::class, 'document_saves')->withTimestamps();
+    }
+
+    /**
+     * Blogs this user saved/bookmarked
+     */
+    public function savedBlogs()
+    {
+        return $this->belongsToMany(Blog::class, 'blog_saves')->withTimestamps();
+    }
 }

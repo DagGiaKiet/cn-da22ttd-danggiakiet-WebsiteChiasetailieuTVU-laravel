@@ -32,4 +32,20 @@ class Blog extends Model
     {
         return $this->hasMany(BlogComment::class);
     }
+
+    /**
+     * Users who liked this blog
+     */
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'blog_likes')->withTimestamps();
+    }
+
+    /**
+     * Users who saved/bookmarked this blog
+     */
+    public function saves()
+    {
+        return $this->belongsToMany(User::class, 'blog_saves')->withTimestamps();
+    }
 }
