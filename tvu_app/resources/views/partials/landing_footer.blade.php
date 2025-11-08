@@ -20,7 +20,7 @@
                         <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">Tài nguyên</h3>
                         <ul class="mt-4 space-y-4">
                             <li><a href="{{ route('documents.index') }}" class="text-base text-gray-400 hover:text-white">Tài liệu học tập</a></li>
-                            <li><a href="{{ route('blogs.index') }}" class="text-base text-gray-400 hover:text-white">Blog</a></li>
+                            <li><a href="{{ route('blogs.index') }}" class="text-base text-gray-400 hover:text-white">Bài viết</a></li>
                             <li><a href="#" class="text-base text-gray-400 hover:text-white">Sự kiện</a></li>
                         </ul>
                     </div>

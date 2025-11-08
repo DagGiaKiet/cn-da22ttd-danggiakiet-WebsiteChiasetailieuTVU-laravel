@@ -38,18 +38,50 @@ class PublicCategoryController extends Controller
 
     public function documents(Request $request)
     {
+        // Flexible filters to support the new UI
+        $khoaId = $request->query('khoa_id');
+        $nganhId = $request->query('nganh_id');
         $monId = $request->query('mon_id');
-        abort_if(!$monId, 400, 'mon_id is required');
-        $docs = Document::query()
-            ->where('mon_id', $monId)
-            ->where('trang_thai', 'available')
-            ->select('id','ten_tai_lieu','mo_ta','gia','loai','hinh_anh')
-            ->orderByDesc('id')
+        $queryText = $request->query('q');
+        $loai = $request->query('loai'); // 'cho' | 'ban'
+        $year = $request->query('year');
+        $sort = $request->query('sort', 'new'); // new | price_asc | price_desc
+
+        $q = Document::query()
+            ->with([
+                'khoa:id,ten_khoa',
+                'nganh:id,ten_nganh',
+                'mon:id,ten_mon'
+            ])
+            ->where('trang_thai', 'available');
+
+        if ($khoaId) $q->where('khoa_id', $khoaId);
+        if ($nganhId) $q->where('nganh_id', $nganhId);
+        if ($monId) $q->where('mon_id', $monId);
+        if ($loai) $q->where('loai', $loai);
+        if ($year) $q->whereYear('created_at', (int)$year);
+        if ($queryText) {
+            $like = '%'.$queryText.'%';
+            $q->where(function($sub) use ($like){
+                $sub->where('ten_tai_lieu', 'like', $like)
+                    ->orWhere('mo_ta', 'like', $like);
+            });
+        }
+
+        if ($sort === 'price_asc') $q->orderBy('gia', 'asc');
+        elseif ($sort === 'price_desc') $q->orderBy('gia', 'desc');
+        else $q->orderByDesc('created_at');
+
+        $docs = $q->select('id','ten_tai_lieu','mo_ta','gia','loai','hinh_anh','khoa_id','nganh_id','mon_id','created_at')
             ->get()
             ->map(function ($d) {
                 $d->hinh_anh_url = ($d->hinh_anh && Storage::disk('public')->exists($d->hinh_anh))
                     ? asset('storage/'.$d->hinh_anh)
                     : null;
+                $d->khoa_ten = optional($d->khoa)->ten_khoa;
+                $d->nganh_ten = optional($d->nganh)->ten_nganh;
+                $d->mon_ten = optional($d->mon)->ten_mon;
+                $d->created_date = optional($d->created_at)->format('m/Y');
                 return $d;
             });
         return response()->json($docs);

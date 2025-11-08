@@ -43,9 +43,12 @@ Auth::routes();
 // Protected routes - require authentication
 Route::middleware(['auth'])->group(function () {
     
-    // Documents
-    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
-    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
+    // Documents (redirect index to danh-muc)
+    Route::get('/documents', function(){ return redirect()->route('categories.search'); })->name('documents.index');
+    // Remove dedicated create page; redirect to search with upload modal open
+    Route::get('/documents/create', function () {
+        return redirect()->route('categories.search', ['upload' => 1]);
+    })->name('documents.create');
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
     Route::post('/documents/{document}/save', [DocumentController::class, 'toggleSave'])->name('documents.save');
@@ -60,7 +63,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/categories/mon/{mon}', [CategoryController::class, 'showMon'])->name('categories.mon');
     
     // Blogs (auth-required actions only)
-    Route::get('/blogs/create', [BlogController::class, 'create'])->name('blogs.create');
+    // Replace standalone create page with redirect to index + modal auto-open
+    Route::get('/blogs/create', function(){ return redirect()->route('blogs.index', ['new' => 1]); })->name('blogs.create');
     Route::post('/blogs', [BlogController::class, 'store'])->name('blogs.store');
     Route::post('/blogs/{blog}/comment', [BlogController::class, 'addComment'])->name('blogs.comment');
     Route::post('/blogs/{blog}/like', [BlogController::class, 'toggleLike'])->name('blogs.like');
@@ -78,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

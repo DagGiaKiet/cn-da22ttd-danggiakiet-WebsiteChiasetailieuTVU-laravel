@@ -22,7 +22,7 @@
       <div class="mt-1 text-2xl font-semibold">{{ $ordersCount ?? ($user->orders->count() ?? 0) }}</div>
     </div>
     <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <div class="text-sm text-gray-600">Bài viết blog</div>
+  <div class="text-sm text-gray-600">Bài viết</div>
       <div class="mt-1 text-2xl font-semibold">{{ $blogsCount ?? ($user->blogs->count() ?? 0) }}</div>
     </div>
     <div class="bg-white border border-gray-200 rounded-lg p-4">
@@ -299,11 +299,11 @@
     </div>
   </div>
 
-  {{-- Admin-like: Quản lý bài đăng Blog --}}
+  {{-- Admin-like: Quản lý bài viết --}}
   <div class="mt-6 bg-white shadow rounded-lg">
     <div class="p-6 border-b border-gray-200 flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-semibold text-gray-900">Quản lý bài đăng Blog</h2>
+  <h2 class="text-xl font-semibold text-gray-900">Quản lý bài viết</h2>
         <p class="mt-1 text-sm text-gray-500">Kiểm duyệt bài đăng từ cộng đồng</p>
       </div>
       <form method="GET" class="flex items-center space-x-2">

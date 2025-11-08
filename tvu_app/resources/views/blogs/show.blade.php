@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $blog->tieu_de . ' - Blog')
+@section('title', $blog->tieu_de . ' - Bài viết')
 @section('content')
 <div class="max-w-3xl mx-auto">
   <div class="bg-white shadow rounded-lg overflow-hidden">

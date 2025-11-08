@@ -35,12 +35,19 @@ class DocumentController extends Controller
 			'ten_tai_lieu' => 'required|string|max:255',
 			'mo_ta' => 'nullable|string',
 			'hinh_anh' => 'nullable|image|max:4096',
-			'gia' => 'required|numeric|min:0',
+			'gia' => 'nullable|numeric|min:0',
 			'loai' => 'required|in:ban,cho',
 			'khoa_id' => 'required|exists:khoas,id',
 			'nganh_id' => 'required|exists:nganhs,id',
 			'mon_id' => 'required|exists:mons,id',
 		]);
+
+		// Conditional price rule: if selling, price is required and > 0; if free, force 0
+		if (($data['loai'] ?? 'cho') === 'ban') {
+			$request->validate(['gia' => 'required|numeric|min:1000']);
+		} else {
+			$data['gia'] = 0;
+		}
 
 		if ($request->hasFile('hinh_anh')) {
 			$data['hinh_anh'] = $request->file('hinh_anh')->store('documents', 'public');
@@ -60,7 +67,20 @@ class DocumentController extends Controller
 		if (auth()->check()) {
 			$saved = DB::table('document_saves')->where(['document_id'=>$document->id,'user_id'=>auth()->id()])->exists();
 		}
-		return view('documents.show', compact('document','saved'));
+		// Related documents: prefer same mon, then nganh/khoa; exclude current; only available
+		$related = Document::with('user')
+			->where('id', '!=', $document->id)
+			->where('trang_thai', 'available')
+			->where(function($q) use ($document) {
+				$q->where('mon_id', $document->mon_id)
+				  ->orWhere('nganh_id', $document->nganh_id)
+				  ->orWhere('khoa_id', $document->khoa_id);
+			})
+			->latest()
+			->limit(6)
+			->get();
+
+		return view('documents.show', compact('document','saved','related'));
 	}
 
 	public function edit(Document $document)
@@ -86,13 +106,20 @@ class DocumentController extends Controller
 			'ten_tai_lieu' => 'required|string|max:255',
 			'mo_ta' => 'nullable|string',
 			'hinh_anh' => 'nullable|image|max:4096',
-			'gia' => 'required|numeric|min:0',
+			'gia' => 'nullable|numeric|min:0',
 			'loai' => 'required|in:ban,cho',
 			'khoa_id' => 'required|exists:khoas,id',
 			'nganh_id' => 'required|exists:nganhs,id',
 			'mon_id' => 'required|exists:mons,id',
 			'trang_thai' => 'required|in:available,sold',
 		]);
+
+		// Conditional price enforcement
+		if (($data['loai'] ?? 'cho') === 'ban') {
+			$request->validate(['gia' => 'required|numeric|min:1000']);
+		} else {
+			$data['gia'] = 0;
+		}
 
 		if ($request->hasFile('hinh_anh')) {
 			$data['hinh_anh'] = $request->file('hinh_anh')->store('documents', 'public');

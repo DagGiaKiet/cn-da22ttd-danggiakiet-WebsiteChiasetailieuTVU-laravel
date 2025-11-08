@@ -48,14 +48,15 @@
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="form-label">Hình thức</label>
-        <select name="loai" class="form-select">
-          <option value="cho" @selected($document->loai==='cho')>Miễn phí</option>
-          <option value="ban" @selected($document->loai==='ban')>Bán lại giá rẻ</option>
+        @php $loaiOld = old('loai', $document->loai); @endphp
+        <select name="loai" id="loaiSelect" class="form-select">
+          <option value="cho" @selected($loaiOld==='cho')>Miễn phí</option>
+          <option value="ban" @selected($loaiOld==='ban')>Bán lại giá rẻ</option>
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" id="giaGroup">
         <label class="form-label">Giá (đ)</label>
-        <input type="number" step="1000" min="0" name="gia" class="form-control" value="{{ old('gia',$document->gia) }}">
+        <input type="number" step="1000" min="0" name="gia" id="giaInput" class="form-control" value="{{ old('gia',$document->gia) }}">
       </div>
       <div class="col-md-4">
         <label class="form-label">Trạng thái</label>
@@ -69,3 +70,31 @@
   </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const select = document.getElementById('loaiSelect');
+  const group = document.getElementById('giaGroup');
+  const input = document.getElementById('giaInput');
+  function syncPriceVisibility(){
+    const isBan = select.value === 'ban';
+    if (isBan) {
+      group.classList.remove('d-none');
+      group.classList.remove('hidden');
+      input.removeAttribute('disabled');
+      input.setAttribute('required','required');
+      if (!input.value || Number(input.value) <= 0) input.value = '';
+    } else {
+      group.classList.add('d-none');
+      group.classList.add('hidden');
+      input.setAttribute('disabled','disabled');
+      input.removeAttribute('required');
+      input.value = 0;
+    }
+  }
+  select.addEventListener('change', syncPriceVisibility);
+  syncPriceVisibility();
+});
+</script>
+@endpush

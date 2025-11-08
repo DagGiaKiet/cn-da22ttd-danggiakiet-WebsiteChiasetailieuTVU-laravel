@@ -45,7 +45,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('blogs.index') }}">
-                            <i class="fas fa-blog"></i> Blog
+                            <i class="fas fa-blog"></i> Bài viết
                         </a>
                     </li>
                 </ul>
