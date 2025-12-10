@@ -1,0 +1,98 @@
+# Laravel specific
+src/**/vendor/
+src/**/node_modules/
+src/**/.env
+src/**/.env.backup
+src/**/.phpunit.result.cache
+src/**/Homestead.json
+src/**/Homestead.yaml
+src/**/npm-debug.log
+src/**/yarn-error.log
+
+# Laravel storage và cache
+src/**/storage/*.key
+src/**/storage/app/*
+!src/**/storage/app/.gitignore
+src/**/storage/framework/cache/*
+!src/**/storage/framework/cache/.gitignore
+src/**/storage/framework/sessions/*
+!src/**/storage/framework/sessions/.gitignore
+src/**/storage/framework/testing/*
+!src/**/storage/framework/testing/.gitignore
+src/**/storage/framework/views/*
+!src/**/storage/framework/views/.gitignore
+src/**/storage/logs/*
+!src/**/storage/logs/.gitignore
+src/**/bootstrap/cache/*
+!src/**/bootstrap/cache/.gitignore
+
+# Public storage
+src/**/public/storage
+src/**/public/hot
+src/**/public/build
+
+# IDE và Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Composer
+composer.phar
+composer.lock
+
+# NPM
+package-lock.json
+yarn.lock
+
+# Testing
+src/**/coverage/
+src/**/.phpunit.cache
+
+# Build files
+src/**/dist/
+src/**/build/
+src/**/*.compiled.*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# Personal files (để tạm thời, sau này cần xóa)
+HUONGPHATTRIEN.txt
+
+# Các file đặc biệt không commit
+thesis/doc/*.doc
+thesis/doc/*.docx
+thesis/pdf/*.pdf
+thesis/abs/*.ppt
+thesis/abs/*.pptx
+thesis/abs/*.avi
+thesis/abs/*.mp4
+
+# Giữ lại README trong các thư mục
+!**/README.md
+
+# Giữ lại file .gitkeep để preserve empty directories
+!**/.gitkeep
