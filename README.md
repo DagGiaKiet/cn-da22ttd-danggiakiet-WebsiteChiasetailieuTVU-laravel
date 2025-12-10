@@ -7,7 +7,7 @@
 
 ## 📚 Giới Thiệu Đồ Án
 
-Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia sẻ và trao đổi giáo trình hoặc tài liệu học tập bản giấy (đã sử dụng). Tài liệu được phân loại theo Khoa, Ngành, Môn học. Hệ thống hỗ trợ hai hình thức chia sẻ: miễn phí hoặc bán lại với giá rẻ.
+Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia sẻ và trao đổi giáo trình hoặc tặng tài liệu học tập bản giấy (đã sử dụng). Tài liệu được phân loại theo Khoa, Ngành, Môn học. Hệ thống hỗ trợ hai hình thức chia sẻ: miễn phí hoặc bán lại với giá rẻ.
 
 ## 👨‍🎓 Thông Tin Sinh Viên
 
