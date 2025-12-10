@@ -82,6 +82,9 @@ yarn-error.log*
 # Personal files (để tạm thời, sau này cần xóa)
 HUONGPHATTRIEN.txt
 
+# Old files backup (không commit)
+_old_files/
+
 # Các file đặc biệt không commit
 thesis/doc/*.doc
 thesis/doc/*.docx
