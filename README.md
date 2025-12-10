@@ -17,7 +17,7 @@ Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia
 | **MSSV** | 110122001 |
 | **Lớp** | DA22TTD |
 | **Khoa** | Công nghệ Thông tin |
-| **Email** | 110122001@st.tvu.edu.vn |
+| **Email** | 110122098@st.tvu.edu.vn |
 | **Điện thoại** | [Số điện thoại của bạn] |
 
 ## 👨‍🏫 Giảng Viên Hướng Dẫn
