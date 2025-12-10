@@ -228,13 +228,8 @@ Mọi đóng góp, ý kiến đều được hoan nghênh. Vui lòng tạo issue
 **Sinh viên thực hiện:**
 - **Họ tên**: Đặng Gia Kiệt
 - **MSSV**: 110122001
-- **Email**: 110122001@st.tvu.edu.vn
+- **Email**: 110122098@st.tvu.edu.vn
 - **GitHub**: [DagGiaKiet](https://github.com/DagGiaKiet)
-
-**Giảng viên hướng dẫn:**
-- **Họ tên**: [Tên giảng viên]
-- **Email**: [Email giảng viên]
-
 ---
 
 **Trường Đại học Trà Vinh**  
