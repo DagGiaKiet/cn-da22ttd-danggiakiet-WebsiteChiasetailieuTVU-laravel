@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TVU Book Exchange - Hệ thống Chia sẻ Tài liệu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #0066cc;
+            margin-bottom: 1rem;
+        }
+        .card-document:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/">
+                <i class="fas fa-book-reader"></i> TVU Book Exchange
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">
+                            <i class="fas fa-user-plus"></i> Đăng ký
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="fas fa-book-open"></i> TVU Book Exchange
+            </h1>
+            <p class="lead mb-4">
+                Nền tảng chia sẻ tài liệu học tập cho sinh viên Trường Đại học Trà Vinh
+            </p>
+            <p class="mb-4">
+                Tiết kiệm chi phí, chia sẻ tri thức, tái sử dụng tài liệu
+            </p>
+            <a href="/register" class="btn btn-light btn-lg me-2">
+                <i class="fas fa-user-plus"></i> Đăng ký ngay
+            </a>
+            <a href="/login" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Tính năng nổi bật</h2>
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4>Chia sẻ tài liệu</h4>
+                    <p>Đăng tải và chia sẻ giáo trình, tài liệu học tập đã sử dụng với sinh viên khác</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <h4>Phân loại rõ ràng</h4>
+                    <p>Tài liệu được phân loại theo Khoa → Ngành → Môn học, dễ dàng tìm kiếm</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h4>Miễn phí hoặc Bán lại</h4>
+                    <p>Hỗ trợ cả chia sẻ miễn phí và bán lại tài liệu với giá rẻ</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-blog"></i>
+                    </div>
+                    <h4>Blog chia sẻ</h4>
+                    <p>Đăng bài viết, trao đổi và hẹn gặp trực tiếp tại TVU</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h4>Giỏ hàng</h4>
+                    <p>Quản lý tài liệu muốn mua và đặt hàng dễ dàng</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>An toàn & Bảo mật</h4>
+                    <p>Chỉ dành cho sinh viên TVU với email @st.tvu.edu.vn</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Cách thức hoạt động</h2>
+            <div class="row">
+                <div class="col-md-3 text-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 2rem;">
+                        1
+                    </div>
+                    <h5 class="mt-3">Đăng ký tài khoản</h5>
+                    <p>Sử dụng email @st.tvu.edu.vn và upload ảnh thẻ sinh viên</p>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 2rem;">
+                        2
+                    </div>
+                    <h5 class="mt-3">Đăng tải tài liệu</h5>
+                    <p>Chọn Khoa, Ngành, Môn và upload tài liệu của bạn</p>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 2rem;">
+                        3
+                    </div>
+                    <h5 class="mt-3">Tìm kiếm & Mua</h5>
+                    <p>Duyệt danh mục, thêm vào giỏ hàng và đặt mua</p>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 2rem;">
+                        4
+                    </div>
+                    <h5 class="mt-3">Gặp & Trao đổi</h5>
+                    <p>Hẹn gặp tại TVU để trao đổi tài liệu</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white text-center">
+        <div class="container">
+            <h2 class="mb-4">Sẵn sàng chia sẻ và tiết kiệm?</h2>
+            <p class="lead mb-4">Tham gia cộng đồng sinh viên TVU ngay hôm nay!</p>
+            <a href="/register" class="btn btn-light btn-lg">
+                <i class="fas fa-user-plus"></i> Đăng ký miễn phí
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-book-reader"></i> TVU Book Exchange</h5>
+                    <p>Website chia sẻ tài liệu học tập<br>Trường Đại học Trà Vinh</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p>
+                        <i class="fas fa-map-marker-alt"></i> Số 126, Nguyễn Thiện Thành, Khóm 4, Phường 5, TP. Trà Vinh<br>
+                        <i class="fas fa-phone"></i> (0294) 3855246<br>
+                        <i class="fas fa-envelope"></i> support@tvu.edu.vn
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Theo dõi chúng tôi</h5>
+                    <p>
+                        <a href="#" class="text-white text-decoration-none me-3"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#" class="text-white text-decoration-none me-3"><i class="fab fa-youtube fa-2x"></i></a>
+                        <a href="#" class="text-white text-decoration-none"><i class="fab fa-instagram fa-2x"></i></a>
+                    </p>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 TVU Book Exchange. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
