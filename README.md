@@ -14,7 +14,7 @@ Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia
 | Thông tin | Chi tiết |
 |-----------|----------|
 | **Họ và tên** | Đặng Gia Kiệt |
-| **MSSV** | 110122001 |
+| **MSSV** | 110122098 |
 | **Lớp** | DA22TTD |
 | **Khoa** | Công nghệ Thông tin |
 | **Email** | 110122098@st.tvu.edu.vn |
