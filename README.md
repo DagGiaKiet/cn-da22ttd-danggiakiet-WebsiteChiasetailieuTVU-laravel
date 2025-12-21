@@ -25,7 +25,7 @@ Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia
 | Thông tin | Chi tiết |
 |-----------|----------|
 | **Họ và tên** | [Tên giảng viên] |
-| **Bộ môn** | [Bộ môn] |
+| **Khoa** | [Kỹ thuật và công nghệ] |
 | **Email** | [Email giảng viên] |
 
 ## 🚀 Tính Năng Chính
