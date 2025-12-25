@@ -14,7 +14,7 @@ Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia
 | Thông tin | Chi tiết |
 |-----------|----------|
 | **Họ và tên** | Đặng Gia Kiệt |
-| **MSSV** | 110122001 |
+| **MSSV** | 110122098 |
 | **Lớp** | DA22TTD |
 | **Khoa** | Công nghệ Thông tin |
 | **Email** | 110122098@st.tvu.edu.vn |
@@ -25,7 +25,7 @@ Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia
 | Thông tin | Chi tiết |
 |-----------|----------|
 | **Họ và tên** | [Tên giảng viên] |
-| **Bộ môn** | [Bộ môn] |
+| **Khoa** | [Kỹ thuật và công nghệ] |
 | **Email** | [Email giảng viên] |
 
 ## 🚀 Tính Năng Chính
@@ -227,7 +227,7 @@ Mọi đóng góp, ý kiến đều được hoan nghênh. Vui lòng tạo issue
 
 **Sinh viên thực hiện:**
 - **Họ tên**: Đặng Gia Kiệt
-- **MSSV**: 110122001
+- **MSSV**: 110122098
 - **Email**: 110122098@st.tvu.edu.vn
 - **GitHub**: [DagGiaKiet](https://github.com/DagGiaKiet)
 ---
