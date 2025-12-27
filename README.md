@@ -24,7 +24,7 @@ Website cho phép sinh viên Trường Đại học Trà Vinh đăng tải, chia
 
 | Thông tin | Chi tiết |
 |-----------|----------|
-| **Họ và tên** | [Tên giảng viên] |
+| **Họ và tên** | [Lê Minh Tự[ |
 | **Khoa** | [Kỹ thuật và công nghệ] |
 | **Email** | [Email giảng viên] |
 
