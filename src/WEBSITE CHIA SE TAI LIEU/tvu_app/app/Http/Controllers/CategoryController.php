@@ -29,7 +29,7 @@ class CategoryController extends Controller
 
 	public function showMon(Mon $mon)
 	{
-		$documents = Document::where('mon_id', $mon->id)->latest()->paginate(12);
+		$documents = Document::where('mon_id', $mon->id)->where('trang_thai', 'available')->latest()->paginate(12);
 		return view('categories.mon', compact('mon', 'documents'));
 	}
 }

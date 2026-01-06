@@ -17,6 +17,11 @@
         <div class="relative flex-1 md:w-96">
           <input id="qInput" type="text" placeholder="Tìm kiếm tài liệu..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-primary focus:border-primary" />
           <span class="absolute inset-y-0 left-3 flex items-center text-gray-400"><i data-feather="search" class="w-4 h-4"></i></span>
+          
+          {{-- Global Search Suggestions Dropdown --}}
+          <div id="searchSuggestions" class="absolute z-50 top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-100 hidden max-h-96 overflow-y-auto">
+              <!-- Suggestions will be injected here -->
+          </div>
         </div>
         @auth
           <button id="openUploadBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white font-medium hover:bg-primary-700">
@@ -128,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const resultsInfo = document.getElementById('resultsInfo');
   const grid = document.getElementById('resultsGrid');
   const pager = document.getElementById('pager');
+  const searchSuggestions = document.getElementById('searchSuggestions');
 
   // Elements for upload modal
   const modal = document.getElementById('uploadModal');
@@ -191,6 +197,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show advanced selects and fetch Ngành
     selNganh.innerHTML = '<option value="">Tất cả ngành</option>';
     selMon.innerHTML = '<option value="">Tất cả môn học</option>';
+    if (searchSuggestions) searchSuggestions.classList.add('hidden'); 
+    
     if (selKhoa.value && selKhoa.value!=='all'){
       rowAdv.style.display='grid';
       fetch(`${API.nganhs}?khoa_id=${encodeURIComponent(selKhoa.value)}`)
@@ -216,7 +224,110 @@ document.addEventListener('DOMContentLoaded', function() {
   selType.addEventListener('change', ()=>{ currentPage=1; render(); });
   selYear.addEventListener('change', ()=>{ currentPage=1; render(); });
   selSort.addEventListener('change', ()=>{ currentPage=1; render(); });
-  qInput.addEventListener('input', debounce(()=>{ currentPage=1; render(); }));
+  
+  // Search Suggestions Logic
+  @auth const isLoggedIn = true; @else const isLoggedIn = false; @endauth
+
+  qInput.addEventListener('input', debounce(()=>{
+      const q = qInput.value.trim();
+      const hasFilter = selKhoa.value && selKhoa.value !== 'all';
+
+      // Hide suggestions if query is empty
+      if(!q) {
+          searchSuggestions.classList.add('hidden');
+          if(hasFilter) { currentPage=1; render(); }
+          return;
+      }
+
+      if (hasFilter) {
+          // Mode 1: Filter existing loaded docs
+          searchSuggestions.classList.add('hidden');
+          currentPage=1;
+          render();
+      } else {
+          // Mode 2: Global Search Suggestions
+          if (q.length < 2) {
+              searchSuggestions.classList.add('hidden');
+              return;
+          }
+          fetchSuggestions(q);
+      }
+  }));
+  
+  // Close suggestions when clicking outside
+  document.addEventListener('click', (e) => {
+    if (searchSuggestions && !qInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+      searchSuggestions.classList.add('hidden');
+    }
+  });
+
+  function fetchSuggestions(query) {
+    if (!query) return;
+    fetch(`${API.documents}?q=${encodeURIComponent(query)}`)
+      .then(r => r.json())
+      .then(list => {
+        renderSuggestions(list);
+      })
+      .catch(() => {});
+  }
+
+  function renderSuggestions(list) {
+    searchSuggestions.innerHTML = '';
+    if (!list || !Array.isArray(list) || list.length === 0) {
+      searchSuggestions.classList.add('hidden');
+      return;
+    }
+    
+    // Sort logic from server or just take top results
+    const items = list.slice(0, 10);
+    searchSuggestions.classList.remove('hidden');
+
+    if (items.length === 0) {
+        searchSuggestions.innerHTML = '<div class="p-3 text-sm text-gray-500">Không tìm thấy kết quả</div>';
+        return;
+    }
+
+    items.forEach(doc => {
+      const div = document.createElement('div');
+      div.className = 'flex items-start gap-3 p-3 hover:bg-gray-50 cursor-pointer border-b last:border-0 transition-colors pointer-events-auto'; // pointer-events-auto just in case
+      
+      const isFree = doc.loai === 'cho';
+      const amount = new Intl.NumberFormat('vi-VN').format(doc.gia||0);
+      const priceText = isFree ? 'Miễn phí' : `${amount}đ`;
+      const priceClass = isFree ? 'text-green-600' : 'text-indigo-600';
+      const kName = doc.khoa ? doc.khoa.ten_khoa : (doc.khoa_ten || '');
+
+      div.innerHTML = `
+        <div class="mt-1 w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium text-gray-900 truncate">${doc.ten_tai_lieu}</div>
+          <div class="flex items-center justify-between mt-1">
+             <span class="text-xs text-gray-500 truncate mr-2">${kName}</span>
+             <span class="text-xs font-semibold ${priceClass} whitespace-nowrap">${priceText}</span>
+          </div>
+        </div>
+      `;
+      
+      div.addEventListener('click', (e) => {
+        // Prevent default navigation? Not needed as it is a div
+        e.stopPropagation(); 
+        
+        if (!isLoggedIn) {
+          // Guest
+          if(confirm('Bạn cần đăng nhập để xem chi tiết tài liệu này.\\nĐăng nhập ngay/đăng ký?')) {
+            window.location.href = '/login';
+          }
+        } else {
+            // User
+            window.location.href = `/documents/${doc.id}`;
+        }
+      });
+      
+      searchSuggestions.appendChild(div);
+    });
+  }
 
   // Upload modal events
   function togglePrice(){

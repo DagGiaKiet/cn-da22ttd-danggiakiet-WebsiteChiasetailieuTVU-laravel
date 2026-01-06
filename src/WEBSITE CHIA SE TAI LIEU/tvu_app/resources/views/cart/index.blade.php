@@ -25,9 +25,13 @@
               <div class="cart-item p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4" data-item-id="{{ $item->id }}">
                 @php
                   $doc = $item->document;
-                  $img = $doc->hinh_anh ? asset('storage/'.$doc->hinh_anh) : asset('img/maclenin.jpg');
+                  if ($doc->hinh_anh && Str::startsWith($doc->hinh_anh, 'img/')) {
+                      $img = asset($doc->hinh_anh);
+                  } else {
+                      $img = $doc->hinh_anh ? asset('storage/'.$doc->hinh_anh) : asset('img/maclenin.jpg');
+                  }
                 @endphp
-                <img src="{{ $img }}" alt="{{ $doc->ten_tai_lieu }}" class="w-20 h-20 object-cover rounded">
+                <img src="{{ $img }}" alt="{{ $doc->ten_tai_lieu }}" class="w-20 h-20 object-cover rounded flex-shrink-0">
                 <div class="flex-1">
                   <h3 class="text-lg font-medium text-gray-900">{{ $doc->ten_tai_lieu }}</h3>
                   <p class="text-gray-600 mt-1">{{ Str::limit($doc->mo_ta, 120) }}</p>

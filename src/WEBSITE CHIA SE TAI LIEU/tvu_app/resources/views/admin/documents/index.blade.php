@@ -8,6 +8,13 @@
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Kiểm duyệt tài liệu được đăng tải</p>
     </div>
     <div class="px-6 py-4 overflow-x-auto">
+      <div class="flex justify-between items-center mb-4">
+        <div class="relative">
+          <input type="text" id="document-search" placeholder="Tìm kiếm tài liệu..." class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+          <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400 dark:text-gray-500"></i>
+        </div>
+      </div>
+
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead class="bg-gray-50 dark:bg-gray-700">
           <tr>
@@ -19,23 +26,37 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trạng thái</th>
           </tr>
         </thead>
-        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          @foreach($documents as $d)
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $d->id }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $d->ten_tai_lieu }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $d->user->name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $d->loai }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $d->loai==='cho' ? 'Miễn phí' : number_format($d->gia, 0, ',', '.') . ' VND' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $d->trang_thai === 'available' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">{{ $d->trang_thai }}</span>
-              </td>
-            </tr>
-          @endforeach
+        <tbody id="document-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          @include('admin.documents.table_rows')
         </tbody>
       </table>
       <div class="mt-4">{{ $documents->links() }}</div>
     </div>
   </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('document-search');
+        const tableBody = document.getElementById('document-table-body');
+        let searchTimeout = null;
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value;
+
+            searchTimeout = setTimeout(() => {
+                fetch(`{{ route('admin.documents.index') }}?search=${encodeURIComponent(query)}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    tableBody.innerHTML = html;
+                    if(window.feather) window.feather.replace();
+                })
+                .catch(err => console.error(err));
+            }, 300);
+        });
+    });
+</script>
 @endsection

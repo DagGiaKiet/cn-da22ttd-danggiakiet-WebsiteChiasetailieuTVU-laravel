@@ -102,6 +102,12 @@ class ProfileController extends Controller
 		return view('profile.saved-blogs', compact('saved'));
 	}
 
+	public function blogs()
+	{
+		$blogs = \App\Models\Blog::where('user_id', auth()->id())->latest()->paginate(10);
+		return view('profile.blogs', compact('blogs'));
+	}
+
 	public function orders()
 	{
 		$orders = \App\Models\Order::where('user_id', auth()->id())->latest()->paginate(10);

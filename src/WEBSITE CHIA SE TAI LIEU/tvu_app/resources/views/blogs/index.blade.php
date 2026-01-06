@@ -20,12 +20,12 @@
         @forelse($blogs as $b)
           <div class="bg-white shadow rounded-lg overflow-hidden">
             <div class="p-6">
-              <div class="flex items-center mb-4">
-                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+              <div class="flex items-center mb-4 cursor-pointer group" onclick="openMessageModal({{ $b->user->id }}, '{{ $b->user->name }}')">
+                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
                   <i data-feather="user" class="w-5 h-5"></i>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-medium">{{ $b->user->name }}</h3>
+                  <h3 class="font-medium group-hover:text-blue-600 transition-colors">{{ $b->user->name }}</h3>
                   <p class="text-sm text-gray-500">{{ $b->user->khoa ?? 'TVU' }} · {{ $b->created_at->diffForHumans() }}</p>
                 </div>
               </div>
@@ -101,6 +101,142 @@
     </div>
   </div>
 </div>
+
+<!-- Message Modal (Liquid Glass Style) -->
+<div id="messageModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <!-- Overlay -->
+    <div id="msgOverlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity duration-300 ease-out opacity-0" aria-hidden="true" onclick="closeMessageModal()"></div>
+
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+    <!-- Modal Panel -->
+    <div id="msgPanel" class="inline-block align-bottom bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-white/20 dark:border-gray-700/50 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all duration-300 ease-out opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      
+      <div class="px-6 pt-6 pb-6">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                <span class="material-symbols-outlined text-[24px]">chat_bubble</span>
+            </div>
+            <div>
+                 <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-1">Gửi tin nhắn</h3>
+                 <p class="text-sm text-gray-500 dark:text-gray-400">Gửi tin nhắn đến <span id="msgRecipientName" class="font-bold text-gray-900 dark:text-white"></span></p>
+            </div>
+        </div>
+
+        <form id="messageForm" onsubmit="handleSendMessage(event)">
+            @csrf
+            <input type="hidden" id="msgRecipientId" name="recipient_id">
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="messageContent" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nội dung tin nhắn</label>
+                    <textarea id="messageContent" name="message" rows="4" required class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-white placeholder-gray-400 transition-all shadow-sm resize-none" placeholder="Nhập tin nhắn của bạn..."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-row-reverse gap-3">
+                <button type="submit" id="btnSendMsg" class="w-full sm:w-auto inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5">
+                    <span class="material-symbols-outlined text-[20px] mr-2">send</span>
+                    Gửi tin nhắn
+                </button>
+                <button type="button" class="w-full sm:w-auto inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all" onclick="closeMessageModal()">
+                    Hủy
+                </button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function openMessageModal(userId, userName) {
+        @guest
+            window.location.href = "{{ route('login') }}";
+            return;
+        @endguest
+
+        if(userId == {{ auth()->id() ?? 0 }}) {
+            alert('Bạn không thể tự gửi tin nhắn cho chính mình!');
+            return;
+        }
+
+        document.getElementById('msgRecipientId').value = userId;
+        document.getElementById('msgRecipientName').innerText = userName;
+        document.getElementById('messageContent').value = '';
+
+        const modal = document.getElementById('messageModal');
+        const overlay = document.getElementById('msgOverlay');
+        const panel = document.getElementById('msgPanel');
+
+        modal.classList.remove('hidden');
+        
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                overlay.classList.remove('opacity-0');
+                overlay.classList.add('opacity-100');
+                
+                panel.classList.remove('opacity-0', 'translate-y-4', 'sm:scale-95');
+                panel.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
+            });
+        });
+    }
+
+    function closeMessageModal() {
+        const modal = document.getElementById('messageModal');
+        const overlay = document.getElementById('msgOverlay');
+        const panel = document.getElementById('msgPanel');
+
+        overlay.classList.remove('opacity-100');
+        overlay.classList.add('opacity-0');
+        
+        panel.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
+        panel.classList.add('opacity-0', 'translate-y-4', 'sm:scale-95');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function handleSendMessage(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('btnSendMsg');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">sync</span> Đang gửi...';
+
+        const formData = new FormData(document.getElementById('messageForm'));
+
+        fetch("{{ route('messages.send') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeMessageModal();
+                // Show toast notification (simplified alert for now, can be upgraded)
+                alert('Tin nhắn đã được gửi thành công!');
+            } else {
+                alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi gửi tin nhắn.');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        });
+    }
+</script>
 @endsection
 
 @push('scripts')

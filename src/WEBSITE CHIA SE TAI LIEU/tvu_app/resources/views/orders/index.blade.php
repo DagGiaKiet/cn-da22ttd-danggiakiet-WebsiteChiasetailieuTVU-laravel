@@ -3,8 +3,11 @@
 @section('title', 'Đơn hàng của tôi')
 
 @section('content')
-  <div class="py-12">
-    <h1 class="text-2xl font-bold text-gray-900 mb-8">Lịch sử đơn hàng</h1>
+  <div class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold text-gray-900">Lịch sử đơn hàng</h1>
+      <a href="{{ route('profile.index') }}" class="inline-flex items-center px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">Quay lại hồ sơ</a>
+    </div>
 
     {{-- Tabs trạng thái --}}
     @php

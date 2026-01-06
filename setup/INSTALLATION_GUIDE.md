@@ -162,8 +162,8 @@ Truy cập: http://localhost:8000
 
 **Sinh viên thực hiện:**
 - Họ tên: Đặng Gia Kiệt
-- MSSV: 110122001
-- Email: 110122001@st.tvu.edu.vn
+- MSSV: 110122098
+- Email: 110122098@st.tvu.edu.vn
 - Điện thoại: [Số điện thoại]
 
 **Giảng viên hướng dẫn:**

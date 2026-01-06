@@ -7,7 +7,10 @@
       <div class="col-md-4 mb-3">
         <div class="card h-100">
           @if($doc->hinh_anh)
-            <img class="card-img-top" src="{{ asset('storage/'.$doc->hinh_anh) }}" alt="{{ $doc->ten_tai_lieu }}"/>
+            @php
+                 $imgSrc = \Illuminate\Support\Str::startsWith($doc->hinh_anh, 'img/') ? asset($doc->hinh_anh) : asset('storage/'.$doc->hinh_anh);
+            @endphp
+            <img class="card-img-top" src="{{ $imgSrc }}" alt="{{ $doc->ten_tai_lieu }}"/>
           @endif
           <div class="card-body">
             <h5 class="card-title">{{ $doc->ten_tai_lieu }}</h5>

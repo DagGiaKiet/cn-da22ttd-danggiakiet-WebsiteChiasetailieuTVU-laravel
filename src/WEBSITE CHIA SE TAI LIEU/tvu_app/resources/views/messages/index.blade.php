@@ -171,14 +171,24 @@
                         <form id="messageForm" class="flex items-center gap-4 bg-white/50 dark:bg-black/30 rounded-lg p-2">
                             @csrf
                             <input type="hidden" name="recipient_id" value="{{ $selectedConversation['id'] }}">
-                            <button type="button" class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-slate-500 dark:text-gray-400">
+                            
+                            <!-- File Input (Hidden) -->
+                            <input type="file" id="fileInput" class="hidden" accept="image/*,.pdf,.doc,.docx">
+                            
+                            <!-- Plus/Attach Button -->
+                            <button type="button" id="attachButton" class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-slate-500 dark:text-gray-400 transition-colors">
                                 <span class="material-symbols-outlined">add_circle</span>
                             </button>
-                            <input id="messageInput" name="message" class="flex-1 bg-transparent border-none focus:ring-0 text-sm text-slate-800 dark:text-white placeholder:text-slate-500 dark:placeholder:text-gray-400" placeholder="Nhập tin nhắn..." type="text" required/>
-                            <button type="button" class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-slate-500 dark:text-gray-400">
+
+                            <input id="messageInput" name="message" class="flex-1 bg-transparent border-none focus:ring-0 text-sm text-slate-800 dark:text-white placeholder:text-slate-500 dark:placeholder:text-gray-400" placeholder="Nhập tin nhắn..." type="text" autocomplete="off" required/>
+                            
+                            <!-- Emoji Button -->
+                            <button type="button" class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-slate-500 dark:text-gray-400 transition-colors">
                                 <span class="material-symbols-outlined">sentiment_satisfied</span>
                             </button>
-                            <button type="submit" id="sendButton" class="flex items-center justify-center size-10 bg-primary rounded-lg text-white hover:opacity-90 transition-opacity">
+
+                            <!-- Send Button -->
+                            <button type="submit" id="sendButton" class="flex items-center justify-center size-10 bg-primary rounded-lg text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/30 transform active:scale-95">
                                 <span class="material-symbols-outlined">send</span>
                             </button>
                         </form>
@@ -197,6 +207,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('messageInput');
     const messagesContainer = document.getElementById('messagesContainer');
     const sendButton = document.getElementById('sendButton');
+    const attachButton = document.getElementById('attachButton');
+    const fileInput = document.getElementById('fileInput');
 
     // Auto scroll to bottom
     function scrollToBottom() {
@@ -207,6 +219,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial scroll
     scrollToBottom();
+
+    // Handle File Attachment (Plus Button)
+    if (attachButton && fileInput) {
+        attachButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                // For now, just alert. 
+                // In a real implementation, you would upload this file to an endpoint (e.g. /documents/upload)
+                // get the ID, and include it in the message send.
+                const fileName = e.target.files[0].name;
+                alert(`Đã chọn tệp: ${fileName}\n(Tính năng gửi tệp đang được phát triển)`);
+                // Clear input
+                e.target.value = '';
+            }
+        });
+    }
 
     // Handle form submission
     if (messageForm) {
@@ -219,10 +250,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const recipientId = document.querySelector('input[name="recipient_id"]').value;
             const csrfToken = document.querySelector('input[name="_token"]').value;
 
-            // Disable send button
+            // Visual "Sending" State
+            const originalBtnContent = sendButton.innerHTML;
             sendButton.disabled = true;
-            sendButton.style.opacity = '0.5';
-
+            sendButton.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span>';
+            
             try {
                 const response = await fetch('{{ route('messages.send') }}', {
                     method: 'POST',
@@ -240,13 +272,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Add message to UI immediately
-                    const now = new Date();
-                    const timeString = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    // Get time from server response or fallback to local
+                    let timeString;
+                    if (data.data && data.data.created_at) {
+                        // Parse ISO string from server
+                        const date = new Date(data.data.created_at);
+                        timeString = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    } else {
+                        const now = new Date();
+                        timeString = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    }
                     
                     const messageHtml = `
                         <div class="flex items-end gap-2 max-w-lg ml-auto">
-                            <div class="bg-primary text-white p-3 rounded-t-lg rounded-bl-lg">
+                            <div class="bg-primary text-white p-3 rounded-t-lg rounded-bl-lg animate-fade-in-up">
                                 <p class="text-sm">${escapeHtml(message)}</p>
                                 <p class="text-xs opacity-70 mt-1">${timeString}</p>
                             </div>
@@ -257,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Clear input
                     messageInput.value = '';
+                    messageInput.focus();
                     
                     // Scroll to bottom
                     scrollToBottom();
@@ -270,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } finally {
                 // Re-enable send button
                 sendButton.disabled = false;
-                sendButton.style.opacity = '1';
+                sendButton.innerHTML = originalBtnContent;
             }
         });
 
@@ -290,9 +330,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return div.innerHTML;
     }
 
-    // Auto-refresh messages every 5 seconds
+    // Auto-refresh messages every 3 seconds (Realtime sync)
     @if($selectedConversation)
+        let isRefreshed = false;
         setInterval(function() {
+            // Don't refresh if user is actively typing (optional, but good UX)
+            // if (document.activeElement === messageInput && messageInput.value.length > 0) return;
+
             const currentUrl = window.location.href;
             fetch(currentUrl, {
                 headers: {
@@ -301,20 +345,26 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.text())
             .then(html => {
-                // Only update if not currently typing
-                if (document.activeElement !== messageInput) {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const newMessages = doc.getElementById('messagesContainer');
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newMessages = doc.getElementById('messagesContainer');
+                
+                if (newMessages) {
+                    // Only update if content is different to avoid flicker
+                    // Or simply checking message count. 
+                    // For now, replacing innerHTML is simplest implementation of "sync".
+                    // To stay at bottom if already at bottom:
+                    const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop <= messagesContainer.clientHeight + 100;
                     
-                    if (newMessages && messagesContainer.scrollHeight - messagesContainer.scrollTop < messagesContainer.clientHeight + 100) {
-                        messagesContainer.innerHTML = newMessages.innerHTML;
+                    messagesContainer.innerHTML = newMessages.innerHTML;
+                    
+                    if (isAtBottom) {
                         scrollToBottom();
                     }
                 }
             })
             .catch(error => console.error('Error refreshing messages:', error));
-        }, 5000);
+        }, 3000); // Poll every 3 seconds for near-realtime
     @endif
 });
 </script>

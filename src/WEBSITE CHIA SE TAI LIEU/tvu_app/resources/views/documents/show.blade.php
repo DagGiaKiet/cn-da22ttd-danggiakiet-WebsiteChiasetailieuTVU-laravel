@@ -24,8 +24,13 @@
 
         {{-- Right: Info --}}
         <div class="lg:col-span-7">
-          <div class="bg-white rounded-xl shadow border border-gray-100 p-6">
-            <div class="flex items-start justify-between">
+          <div class="bg-white rounded-xl shadow border border-gray-100 p-6 relative">
+             <div class="absolute top-6 right-6">
+                <button onclick="history.back()" class="p-2 rounded-full bg-white font-medium text-gray-700 hover:text-primary hover:bg-gray-100 shadow-sm border border-gray-200 transition-colors flex items-center justify-center" title="Quay lại">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
+                </button>
+             </div>
+            <div class="flex items-start justify-between pr-14">
               <h1 class="text-2xl font-bold text-gray-900 pr-4">{{ $document->ten_tai_lieu }}</h1>
               <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium {{ $isFree ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700' }}">{{ $isFree ? 'Miễn phí' : 'Bán lại' }}</span>
             </div>

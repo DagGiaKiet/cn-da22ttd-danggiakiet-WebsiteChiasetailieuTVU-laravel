@@ -37,8 +37,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('student123'),
             'ma_sv' => '2151120001',
             'ma_lop' => 'DH21CS01',
-            'khoa' => 'Công nghệ Thông tin',
-            'nganh' => 'Khoa học Máy tính',
+            'khoa' => 'Kỹ thuật và Công nghệ ( CET )',
+            'nganh' => 'Công nghệ thông tin (ABET)',
             'role' => 'student'
         ]);
 
@@ -48,15 +48,15 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('student123'),
             'ma_sv' => '2151120002',
             'ma_lop' => 'DH21CS01',
-            'khoa' => 'Công nghệ Thông tin',
-            'nganh' => 'Khoa học Máy tính',
+            'khoa' => 'Kỹ thuật và Công nghệ ( CET )',
+            'nganh' => 'Công nghệ thông tin (ABET)',
             'role' => 'student'
         ]);
 
         // Create Khoas
-        $khoaCNTT = Khoa::create([
-            'ten_khoa' => 'Công nghệ Thông tin',
-            'mo_ta' => 'Khoa Công nghệ Thông tin'
+        $khoaCET = Khoa::create([
+            'ten_khoa' => 'Kỹ thuật và Công nghệ ( CET )',
+            'mo_ta' => 'Khoa Kỹ thuật và Công nghệ'
         ]);
 
         $khoaKT = Khoa::create([
@@ -69,17 +69,34 @@ class DatabaseSeeder extends Seeder
             'mo_ta' => 'Khoa Sư phạm'
         ]);
 
-        // Create Nganhs for CNTT
-        $nganhKHMT = Nganh::create([
-            'ten_nganh' => 'Khoa học Máy tính',
-            'khoa_id' => $khoaCNTT->id,
-            'mo_ta' => 'Ngành Khoa học Máy tính'
+        $khoaLLCT = Khoa::create([
+            'ten_khoa' => 'Lý luận chính trị',
+            'mo_ta' => 'Khoa Lý luận chính trị'
         ]);
 
-        $nganhHTTT = Nganh::create([
-            'ten_nganh' => 'Hệ thống Thông tin',
-            'khoa_id' => $khoaCNTT->id,
-            'mo_ta' => 'Ngành Hệ thống Thông tin'
+        // Create Nganhs for CET
+        $nganhCNTT_ABET = Nganh::create([
+            'ten_nganh' => 'Công nghệ thông tin (ABET)',
+            'khoa_id' => $khoaCET->id,
+            'mo_ta' => 'Ngành Công nghệ thông tin theo chuẩn ABET'
+        ]);
+
+        $nganhDDT = Nganh::create([
+            'ten_nganh' => 'Điện - Điện tử & Tự động hóa',
+            'khoa_id' => $khoaCET->id,
+            'mo_ta' => 'Ngành Điện - Điện tử & Tự động hóa'
+        ]);
+
+        $nganhCK = Nganh::create([
+            'ten_nganh' => 'Cơ khí',
+            'khoa_id' => $khoaCET->id,
+            'mo_ta' => 'Ngành Cơ khí'
+        ]);
+
+        $nganhXD = Nganh::create([
+            'ten_nganh' => 'Xây dựng',
+            'khoa_id' => $khoaCET->id,
+            'mo_ta' => 'Ngành Xây dựng'
         ]);
 
         // Create Nganhs for Kinh tế
@@ -95,41 +112,73 @@ class DatabaseSeeder extends Seeder
             'mo_ta' => 'Ngành Kế toán'
         ]);
 
-        // Create Mons for Khoa học Máy tính
+        // Create Nganh for LLCT
+        $nganhCTH = Nganh::create([
+            'ten_nganh' => 'Chính trị học',
+            'khoa_id' => $khoaLLCT->id,
+            'mo_ta' => 'Ngành Chính trị học'
+        ]);
+
+        // Create Nganh for Su Pham
+        $nganhGDMN = Nganh::create([
+             'ten_nganh' => 'Giáo dục Mầm non',
+             'khoa_id' => $khoaSP->id,
+             'mo_ta' => 'Ngành Giáo dục Mầm non'
+        ]);
+        
+        $nganhGDTH = Nganh::create([
+             'ten_nganh' => 'Giáo dục Tiểu học',
+             'khoa_id' => $khoaSP->id,
+             'mo_ta' => 'Ngành Giáo dục Tiểu học'
+        ]);
+
+        $nganhSPNV = Nganh::create([
+             'ten_nganh' => 'Sư phạm Ngữ văn',
+             'khoa_id' => $khoaSP->id,
+             'mo_ta' => 'Ngành Sư phạm Ngữ văn'
+        ]);
+
+        $nganhSPTK = Nganh::create([
+             'ten_nganh' => 'Sư phạm Tiếng Khmer',
+             'khoa_id' => $khoaSP->id,
+             'mo_ta' => 'Ngành Sư phạm Tiếng Khmer'
+        ]);
+
+        // Create Mons for CNTT ABET
         Mon::create([
             'ten_mon' => 'Lập trình Hướng đối tượng',
-            'nganh_id' => $nganhKHMT->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mo_ta' => 'Môn Lập trình Hướng đối tượng với Java/C++'
         ]);
 
         Mon::create([
             'ten_mon' => 'Cấu trúc Dữ liệu và Giải thuật',
-            'nganh_id' => $nganhKHMT->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mo_ta' => 'Môn Cấu trúc Dữ liệu và Giải thuật'
         ]);
 
         Mon::create([
             'ten_mon' => 'Cơ sở Dữ liệu',
-            'nganh_id' => $nganhKHMT->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mo_ta' => 'Môn Cơ sở Dữ liệu'
         ]);
 
         Mon::create([
             'ten_mon' => 'Lập trình Web',
-            'nganh_id' => $nganhKHMT->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mo_ta' => 'Môn Lập trình Web với HTML, CSS, JavaScript, PHP'
         ]);
 
-        // Create Mons for Hệ thống Thông tin
+        // Create Mons for Hệ thống Thông tin replaced by other subjects or linked to CNTT
         Mon::create([
             'ten_mon' => 'Phân tích Thiết kế Hệ thống',
-            'nganh_id' => $nganhHTTT->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mo_ta' => 'Môn Phân tích và Thiết kế Hệ thống Thông tin'
         ]);
 
         Mon::create([
             'ten_mon' => 'Quản trị Hệ thống',
-            'nganh_id' => $nganhHTTT->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mo_ta' => 'Môn Quản trị Hệ thống'
         ]);
 
@@ -166,8 +215,8 @@ class DatabaseSeeder extends Seeder
             'hinh_anh' => 'java-oop.jpg',
             'gia' => 50000,
             'loai' => 'ban',
-            'khoa_id' => $khoaCNTT->id,
-            'nganh_id' => $nganhKHMT->id,
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mon_id' => 1,
             'user_id' => 2,
             'trang_thai' => 'available'
@@ -179,8 +228,8 @@ class DatabaseSeeder extends Seeder
             'hinh_anh' => 'data-structure.jpg',
             'gia' => 0,
             'loai' => 'cho',
-            'khoa_id' => $khoaCNTT->id,
-            'nganh_id' => $nganhKHMT->id,
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mon_id' => 2,
             'user_id' => 2,
             'trang_thai' => 'available'
@@ -192,8 +241,8 @@ class DatabaseSeeder extends Seeder
             'hinh_anh' => 'database.jpg',
             'gia' => 40000,
             'loai' => 'ban',
-            'khoa_id' => $khoaCNTT->id,
-            'nganh_id' => $nganhKHMT->id,
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
             'mon_id' => 3,
             'user_id' => 3,
             'trang_thai' => 'available'

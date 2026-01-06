@@ -42,8 +42,8 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('student123'),
                 'ma_sv' => '2151120001',
                 'ma_lop' => 'DH21CS01',
-                'khoa' => 'Công nghệ Thông tin',
-                'nganh' => 'Khoa học Máy tính',
+                'khoa' => 'Kỹ thuật và Công nghệ ( CET )',
+                'nganh' => 'Công nghệ thông tin (ABET)',
                 'role' => 'student'
             ]
         );
@@ -55,17 +55,17 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('student123'),
                 'ma_sv' => '2151120002',
                 'ma_lop' => 'DH21CS01',
-                'khoa' => 'Công nghệ Thông tin',
-                'nganh' => 'Khoa học Máy tính',
+                'khoa' => 'Kỹ thuật và Công nghệ ( CET )',
+                'nganh' => 'Công nghệ thông tin (ABET)',
                 'role' => 'student'
             ]
         );
 
         // Create Khoas
-        $khoaCNTT = Khoa::firstOrCreate([
-            'ten_khoa' => 'Công nghệ Thông tin',
+        $khoaCET = Khoa::firstOrCreate([
+            'ten_khoa' => 'Kỹ thuật và Công nghệ ( CET )',
         ], [
-            'mo_ta' => 'Khoa Công nghệ Thông tin'
+            'mo_ta' => 'Khoa Kỹ thuật và Công nghệ'
         ]);
 
         $khoaKT = Khoa::firstOrCreate([
@@ -87,56 +87,44 @@ class DatabaseSeeder extends Seeder
             'mo_ta' => 'Khoa Lý luận chính trị'
         ]);
 
-        // Nganh for political theory
-        $nganhLLCT = Nganh::firstOrCreate(
+        // Nganhs for CET
+        $nganhCNTT_ABET = Nganh::firstOrCreate(
             [
-                'ten_nganh' => 'Lý luận Chính trị',
-                'khoa_id' => $khoaLLCT->id,
+                'ten_nganh' => 'Công nghệ thông tin (ABET)',
+                'khoa_id' => $khoaCET->id,
             ],
             [
-                'mo_ta' => 'Các môn thuộc khối Lý luận Chính trị'
+                'mo_ta' => 'Ngành Công nghệ thông tin theo chuẩn ABET'
             ]
         );
 
-        // Mons for political theory
-        $monKinhTeChinhTri = Mon::firstOrCreate(
+        $nganhDDT = Nganh::firstOrCreate(
             [
-                'ten_mon' => 'Kinh tế chính trị Mác - Lênin',
-                'nganh_id' => $nganhLLCT->id,
+                'ten_nganh' => 'Điện - Điện tử & Tự động hóa',
+                'khoa_id' => $khoaCET->id,
             ],
             [
-                'mo_ta' => 'Học phần Kinh tế chính trị trong khối LLCT'
+                'mo_ta' => 'Ngành Điện - Điện tử & Tự động hóa'
             ]
         );
 
-        $monLichSuDang = Mon::firstOrCreate(
+        $nganhCK = Nganh::firstOrCreate(
             [
-                'ten_mon' => 'Lịch sử Đảng Cộng sản Việt Nam',
-                'nganh_id' => $nganhLLCT->id,
+                'ten_nganh' => 'Cơ khí',
+                'khoa_id' => $khoaCET->id,
             ],
             [
-                'mo_ta' => 'Học phần Lịch sử ĐCSVN trong khối LLCT'
+                'mo_ta' => 'Ngành Cơ khí'
             ]
         );
 
-        // Create Nganhs for CNTT
-        $nganhKHMT = Nganh::firstOrCreate(
+        $nganhXD = Nganh::firstOrCreate(
             [
-                'ten_nganh' => 'Khoa học Máy tính',
-                'khoa_id' => $khoaCNTT->id,
+                'ten_nganh' => 'Xây dựng',
+                'khoa_id' => $khoaCET->id,
             ],
             [
-                'mo_ta' => 'Ngành Khoa học Máy tính'
-            ]
-        );
-
-        $nganhHTTT = Nganh::firstOrCreate(
-            [
-                'ten_nganh' => 'Hệ thống Thông tin',
-                'khoa_id' => $khoaCNTT->id,
-            ],
-            [
-                'mo_ta' => 'Ngành Hệ thống Thông tin'
+                'mo_ta' => 'Ngành Xây dựng'
             ]
         );
 
@@ -161,11 +149,84 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Create Mons for Khoa học Máy tính
+        // Nganh for LLCT - Corrected to "Chính trị học"
+        $nganhCTH = Nganh::firstOrCreate(
+            [
+                'ten_nganh' => 'Chính trị học',
+                'khoa_id' => $khoaLLCT->id,
+            ],
+            [
+                'mo_ta' => 'Ngành Chính trị học'
+            ]
+        );
+
+        // Nganh for Su Pham
+        $nganhGDMN = Nganh::firstOrCreate(
+             [
+                'ten_nganh' => 'Giáo dục Mầm non',
+                'khoa_id' => $khoaSP->id,
+             ],
+             [
+                'mo_ta' => 'Ngành Giáo dục Mầm non'
+             ]
+        );
+        
+        $nganhGDTH = Nganh::firstOrCreate(
+             [
+                'ten_nganh' => 'Giáo dục Tiểu học',
+                'khoa_id' => $khoaSP->id,
+             ],
+             [
+                'mo_ta' => 'Ngành Giáo dục Tiểu học'
+             ]
+        );
+
+        $nganhSPNV = Nganh::firstOrCreate(
+             [
+                'ten_nganh' => 'Sư phạm Ngữ văn',
+                'khoa_id' => $khoaSP->id,
+             ],
+             [
+                'mo_ta' => 'Ngành Sư phạm Ngữ văn'
+             ]
+        );
+
+        $nganhSPTK = Nganh::firstOrCreate(
+             [
+                'ten_nganh' => 'Sư phạm Tiếng Khmer',
+                'khoa_id' => $khoaSP->id,
+             ],
+             [
+                'mo_ta' => 'Ngành Sư phạm Tiếng Khmer'
+             ]
+        );
+
+        // Mons for political theory (LLCT) - Linked to CTH
+        $monKinhTeChinhTri = Mon::firstOrCreate(
+            [
+                'ten_mon' => 'Kinh tế chính trị Mác - Lênin',
+                'nganh_id' => $nganhCTH->id,
+            ],
+            [
+                'mo_ta' => 'Học phần Kinh tế chính trị trong khối LLCT'
+            ]
+        );
+
+        $monLichSuDang = Mon::firstOrCreate(
+            [
+                'ten_mon' => 'Lịch sử Đảng Cộng sản Việt Nam',
+                'nganh_id' => $nganhCTH->id,
+            ],
+            [
+                'mo_ta' => 'Học phần Lịch sử ĐCSVN trong khối LLCT'
+            ]
+        );
+
+        // Create Mons for CNTT ABET
         $monOOP = Mon::firstOrCreate(
             [
                 'ten_mon' => 'Lập trình Hướng đối tượng',
-                'nganh_id' => $nganhKHMT->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
             ],
             [
                 'mo_ta' => 'Môn Lập trình Hướng đối tượng với Java/C++'
@@ -175,7 +236,7 @@ class DatabaseSeeder extends Seeder
         $monDSA = Mon::firstOrCreate(
             [
                 'ten_mon' => 'Cấu trúc Dữ liệu và Giải thuật',
-                'nganh_id' => $nganhKHMT->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
             ],
             [
                 'mo_ta' => 'Môn Cấu trúc Dữ liệu và Giải thuật'
@@ -185,7 +246,7 @@ class DatabaseSeeder extends Seeder
         $monDB = Mon::firstOrCreate(
             [
                 'ten_mon' => 'Cơ sở Dữ liệu',
-                'nganh_id' => $nganhKHMT->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
             ],
             [
                 'mo_ta' => 'Môn Cơ sở Dữ liệu'
@@ -195,18 +256,17 @@ class DatabaseSeeder extends Seeder
         $monWeb = Mon::firstOrCreate(
             [
                 'ten_mon' => 'Lập trình Web',
-                'nganh_id' => $nganhKHMT->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
             ],
             [
                 'mo_ta' => 'Môn Lập trình Web với HTML, CSS, JavaScript, PHP'
             ]
         );
 
-        // Create Mons for Hệ thống Thông tin
         $monPTTKHT = Mon::firstOrCreate(
             [
                 'ten_mon' => 'Phân tích Thiết kế Hệ thống',
-                'nganh_id' => $nganhHTTT->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
             ],
             [
                 'mo_ta' => 'Môn Phân tích và Thiết kế Hệ thống Thông tin'
@@ -216,7 +276,7 @@ class DatabaseSeeder extends Seeder
         $monQTHT = Mon::firstOrCreate(
             [
                 'ten_mon' => 'Quản trị Hệ thống',
-                'nganh_id' => $nganhHTTT->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
             ],
             [
                 'mo_ta' => 'Môn Quản trị Hệ thống'
@@ -265,51 +325,117 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Create Documents (existing)
-        Document::firstOrCreate(
-            ['ten_tai_lieu' => 'Giáo trình Lập trình Hướng đối tượng Java'],
-            [
-                'mo_ta' => 'Giáo trình đầy đủ về OOP với Java, còn mới 90%',
-                'hinh_anh' => 'java-oop.jpg',
-                'gia' => 50000,
-                'loai' => 'ban',
-                'khoa_id' => $khoaCNTT->id,
-                'nganh_id' => $nganhKHMT->id,
-                'mon_id' => $monOOP->id,
-                'user_id' => $student1->id,
-                'trang_thai' => 'available'
-            ]
-        );
+        // Create new Subject (Mon) entries for the new documents
+        $monDaiSo = Mon::firstOrCreate(['ten_mon' => 'Đại số đại cương', 'nganh_id' => $nganhCNTT_ABET->id], ['mo_ta' => 'Môn Đại số đại cương']);
+        $monKTLT = Mon::firstOrCreate(['ten_mon' => 'Kỹ thuật lập trình', 'nganh_id' => $nganhCNTT_ABET->id], ['mo_ta' => 'Môn Kỹ thuật lập trình']);
+        $monTACN = Mon::firstOrCreate(['ten_mon' => 'Tiếng Anh chuyên ngành', 'nganh_id' => $nganhCNTT_ABET->id], ['mo_ta' => 'Môn Tiếng Anh chuyên ngành']);
+        $monTVTH = Mon::firstOrCreate(['ten_mon' => 'Tiếng Việt thực hành', 'nganh_id' => $nganhCNTT_ABET->id], ['mo_ta' => 'Môn Tiếng Việt thực hành']);
+        $monToanKT = Mon::firstOrCreate(['ten_mon' => 'Toán Kinh tế', 'nganh_id' => $nganhCNTT_ABET->id], ['mo_ta' => 'Môn Toán Kinh tế']);
+        $monToanRR = Mon::firstOrCreate(['ten_mon' => 'Toán Rời rạc', 'nganh_id' => $nganhCNTT_ABET->id], ['mo_ta' => 'Môn Toán Rời rạc']);
+        $monVTP = Mon::firstOrCreate(['ten_mon' => 'Vi tích phân A1', 'nganh_id' => $nganhCNTT_ABET->id], ['mo_ta' => 'Môn Vi tích phân A1']);
 
-        Document::firstOrCreate(
-            ['ten_tai_lieu' => 'Slide bài giảng Cấu trúc Dữ liệu'],
-            [
-                'mo_ta' => 'Tài liệu slide đầy đủ từ giảng viên, chia sẻ miễn phí',
-                'hinh_anh' => 'data-structure.jpg',
-                'gia' => 0,
-                'loai' => 'cho',
-                'khoa_id' => $khoaCNTT->id,
-                'nganh_id' => $nganhKHMT->id,
-                'mon_id' => $monDSA->id,
-                'user_id' => $student1->id,
-                'trang_thai' => 'available'
-            ]
-        );
+        // Create New Documents with Images
+        $students = [$student1->id, $student2->id];
+        $descriptions = [
+            'Sách còn mới 99%, chưa viết vẽ gì.',
+            'Tài liệu học tập chính hãng, pass lại giá rẻ.',
+            'Giáo trình Photo, chữ rõ nét.',
+            'Sách cũ nhưng nội dung vẫn đầy đủ.',
+            'Mua về nhưng không dùng đến, pass lại cho bạn nào cần.',
+            'Tài liệu tham khảo rất hay cho môn này.',
+            'Sách của thầy cô trong trường biên soạn.'
+        ];
 
-        Document::firstOrCreate(
-            ['ten_tai_lieu' => 'Giáo trình Cơ sở Dữ liệu'],
-            [
-                'mo_ta' => 'Giáo trình về Database, SQL, còn đẹp',
-                'hinh_anh' => 'database.jpg',
-                'gia' => 40000,
-                'loai' => 'ban',
-                'khoa_id' => $khoaCNTT->id,
-                'nganh_id' => $nganhKHMT->id,
-                'mon_id' => $monDB->id,
-                'user_id' => $student2->id,
-                'trang_thai' => 'available'
-            ]
-        );
+        Document::create([
+            'ten_tai_lieu' => 'Đại Số Đại Cương',
+            'mo_ta' => $descriptions[array_rand($descriptions)],
+            'hinh_anh' => 'img/Dai So Dai Cuong.jpg',
+            'gia' => rand(10, 60) * 1000,
+            'loai' => 'ban',
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
+            'mon_id' => $monDaiSo->id,
+            'user_id' => $students[array_rand($students)],
+            'trang_thai' => 'available'
+        ]);
+
+        Document::create([
+            'ten_tai_lieu' => 'Kỹ Thuật Lập Trinh C/C++',
+            'mo_ta' => $descriptions[array_rand($descriptions)],
+            'hinh_anh' => 'img/Ky Thuat Lap Trinh.jpg',
+            'gia' => rand(10, 60) * 1000,
+            'loai' => 'ban',
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
+            'mon_id' => $monKTLT->id,
+            'user_id' => $students[array_rand($students)],
+            'trang_thai' => 'available'
+        ]);
+
+        Document::create([
+            'ten_tai_lieu' => 'Tiếng Anh Chuyên Ngành CNTT',
+            'mo_ta' => $descriptions[array_rand($descriptions)],
+            'hinh_anh' => 'img/Tieng Anh Chuyen Nganh.jpg',
+            'gia' => rand(10, 60) * 1000,
+            'loai' => 'ban',
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
+            'mon_id' => $monTACN->id,
+            'user_id' => $students[array_rand($students)],
+            'trang_thai' => 'available'
+        ]);
+
+        Document::create([
+            'ten_tai_lieu' => 'Tiếng Việt Thực Hành',
+            'mo_ta' => $descriptions[array_rand($descriptions)],
+            'hinh_anh' => 'img/Tieng Viet Thuc Hanh.jpg',
+            'gia' => rand(10, 60) * 1000,
+            'loai' => 'ban',
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
+            'mon_id' => $monTVTH->id,
+            'user_id' => $students[array_rand($students)],
+            'trang_thai' => 'available'
+        ]);
+
+        Document::create([
+            'ten_tai_lieu' => 'Toán Kinh Tế',
+            'mo_ta' => $descriptions[array_rand($descriptions)],
+            'hinh_anh' => 'img/Toan Kinh Te.jpg',
+            'gia' => rand(10, 60) * 1000,
+            'loai' => 'ban',
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
+            'mon_id' => $monToanKT->id,
+            'user_id' => $students[array_rand($students)],
+            'trang_thai' => 'available'
+        ]);
+
+        Document::create([
+            'ten_tai_lieu' => 'Toán Rời Rạc & Ứng Dụng',
+            'mo_ta' => $descriptions[array_rand($descriptions)],
+            'hinh_anh' => 'img/Toan Roi Rac.jpg',
+            'gia' => rand(10, 60) * 1000,
+            'loai' => 'ban',
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
+            'mon_id' => $monToanRR->id,
+            'user_id' => $students[array_rand($students)],
+            'trang_thai' => 'available'
+        ]);
+
+        Document::create([
+            'ten_tai_lieu' => 'Vi Tích Phân A1',
+            'mo_ta' => $descriptions[array_rand($descriptions)],
+            'hinh_anh' => 'img/Vi Tich Phan A1.jpg',
+            'gia' => rand(10, 60) * 1000,
+            'loai' => 'ban',
+            'khoa_id' => $khoaCET->id,
+            'nganh_id' => $nganhCNTT_ABET->id,
+            'mon_id' => $monVTP->id,
+            'user_id' => $students[array_rand($students)],
+            'trang_thai' => 'available'
+        ]);
 
         // Create Documents matching landing featured items
         Document::updateOrCreate(
@@ -320,7 +446,7 @@ class DatabaseSeeder extends Seeder
                 'gia' => 0,
                 'loai' => 'cho',
                 'khoa_id' => $khoaLLCT->id,
-                'nganh_id' => $nganhLLCT->id,
+                'nganh_id' => $nganhCTH->id,
                 'mon_id' => $monKinhTeChinhTri->id,
                 'user_id' => $student1->id,
                 'trang_thai' => 'available'
@@ -335,7 +461,7 @@ class DatabaseSeeder extends Seeder
                 'gia' => 50000,
                 'loai' => 'ban',
                 'khoa_id' => $khoaLLCT->id,
-                'nganh_id' => $nganhLLCT->id,
+                'nganh_id' => $nganhCTH->id,
                 'mon_id' => $monLichSuDang->id,
                 'user_id' => $student2->id,
                 'trang_thai' => 'available'
@@ -346,7 +472,7 @@ class DatabaseSeeder extends Seeder
         $monTinHocCoBan = Mon::firstOrCreate(
             [
                 'ten_mon' => 'Tin học cơ bản',
-                'nganh_id' => $nganhKHMT->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
             ],
             [
                 'mo_ta' => 'Tin học ứng dụng cơ bản'
@@ -360,8 +486,8 @@ class DatabaseSeeder extends Seeder
                 'hinh_anh' => 'img/tinhoccoban.jpg',
                 'gia' => 30000,
                 'loai' => 'ban',
-                'khoa_id' => $khoaCNTT->id,
-                'nganh_id' => $nganhKHMT->id,
+                'khoa_id' => $khoaCET->id,
+                'nganh_id' => $nganhCNTT_ABET->id,
                 'mon_id' => $monTinHocCoBan->id,
                 'user_id' => $student1->id,
                 'trang_thai' => 'available'

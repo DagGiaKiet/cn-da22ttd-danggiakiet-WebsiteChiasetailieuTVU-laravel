@@ -13,11 +13,20 @@
     $st = $statusMap[$order->trang_thai] ?? ['text' => $order->trang_thai, 'class' => 'bg-gray-100 text-gray-800'];
     $doc = $order->document;
     $seller = optional($doc->user)->name ?? 'Người bán';
-    $img = $doc->hinh_anh ? (Str::startsWith($doc->hinh_anh, ['http://','https://']) ? $doc->hinh_anh : asset('storage/'.$doc->hinh_anh)) : asset('img/maclenin.jpg');
+    $img = asset('img/maclenin.jpg');
+    if ($doc->hinh_anh) {
+        if (Illuminate\Support\Str::startsWith($doc->hinh_anh, ['http://','https://'])) {
+             $img = $doc->hinh_anh;
+        } elseif (Illuminate\Support\Str::startsWith($doc->hinh_anh, 'img/')) {
+             $img = asset($doc->hinh_anh);
+        } else {
+             $img = asset('storage/'.$doc->hinh_anh);
+        }
+    }
     $price = number_format($doc->gia ?? 0, 0, ',', '.'). ' VND';
   @endphp
 
-  <div class="py-12">
+  <div class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="bg-white shadow rounded-lg overflow-hidden">
       {{-- Header --}}
       <div class="border-b border-gray-200 p-6">

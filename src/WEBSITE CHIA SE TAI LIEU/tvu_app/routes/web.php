@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\AdminDocumentController;
 use App\Http\Controllers\Admin\AdminBlogController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminContactController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicCategoryController;
@@ -95,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/documents', [ProfileController::class, 'documents'])->name('profile.documents');
     Route::get('/profile/saved-documents', [ProfileController::class, 'savedDocuments'])->name('profile.saved-documents');
     Route::get('/profile/orders', [ProfileController::class, 'orders'])->name('profile.orders');
+    Route::get('/profile/blogs', [ProfileController::class, 'blogs'])->name('profile.blogs');
     Route::get('/profile/saved-blogs', [ProfileController::class, 'savedBlogs'])->name('profile.saved-blogs');
     // Profile actions similar to admin UX
     Route::post('/profile/lock', [ProfileController::class, 'lock'])->name('profile.lock');
@@ -107,13 +109,20 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/stats', [AdminDashboardController::class, 'stats'])->name('dashboard.stats');
+    Route::get('/global-search', [AdminDashboardController::class, 'globalSearch'])->name('global-search');
     
     // Users management
     Route::resource('users', AdminUserController::class);
+    Route::resource('contacts', AdminContactController::class)->only(['index', 'destroy']);
+    Route::patch('contacts/{contact}/status', [AdminContactController::class, 'updateStatus'])->name('contacts.update-status');
     Route::post('users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.update-role');
+    Route::patch('users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::patch('users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.reset-password');
     
     // Documents management
     Route::resource('documents', AdminDocumentController::class);
+    Route::post('documents/{document}/status', [AdminDocumentController::class, 'updateStatus'])->name('documents.update-status');
     
     // Blogs management
     Route::resource('blogs', AdminBlogController::class);

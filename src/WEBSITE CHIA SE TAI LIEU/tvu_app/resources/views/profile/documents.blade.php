@@ -4,9 +4,12 @@
 <div class="w-full py-4 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
   <div class="bg-white shadow rounded-lg">
-    <div class="p-6 border-b border-gray-200">
-      <h2 class="text-xl font-semibold text-gray-900">Tài liệu của tôi</h2>
-      <p class="mt-1 text-sm text-gray-500">Danh sách tài liệu bạn đã đăng</p>
+    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900">Tài liệu của tôi</h2>
+        <p class="mt-1 text-sm text-gray-500">Danh sách tài liệu bạn đã đăng</p>
+      </div>
+      <a href="{{ route('profile.index') }}" class="inline-flex items-center px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">Quay lại hồ sơ</a>
     </div>
     <div class="px-6 py-4 overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">

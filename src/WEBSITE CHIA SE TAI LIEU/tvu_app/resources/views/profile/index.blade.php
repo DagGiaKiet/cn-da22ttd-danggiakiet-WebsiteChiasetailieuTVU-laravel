@@ -16,15 +16,24 @@
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <div class="text-sm text-gray-600">Tài liệu đã đăng</div>
-      <div class="mt-1 text-2xl font-semibold">{{ $documentsCount ?? ($user->documents->count() ?? 0) }}</div>
+      <div class="mt-1 flex items-center justify-between">
+        <div class="text-2xl font-semibold">{{ $documentsCount ?? ($user->documents->count() ?? 0) }}</div>
+        <a href="{{ route('profile.documents') }}" class="inline-flex items-center px-3 py-1.5 rounded-md text-white bg-blue-600 hover:bg-blue-700 text-sm">Xem</a>
+      </div>
     </div>
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <div class="text-sm text-gray-600">Đơn hàng của bạn</div>
-      <div class="mt-1 text-2xl font-semibold">{{ $ordersCount ?? ($user->orders->count() ?? 0) }}</div>
+      <div class="mt-1 flex items-center justify-between">
+        <div class="text-2xl font-semibold">{{ $ordersCount ?? ($user->orders->count() ?? 0) }}</div>
+        <a href="{{ route('profile.orders') }}" class="inline-flex items-center px-3 py-1.5 rounded-md text-white bg-blue-600 hover:bg-blue-700 text-sm">Xem</a>
+      </div>
     </div>
     <div class="bg-white border border-gray-200 rounded-lg p-4">
-  <div class="text-sm text-gray-600">Bài viết</div>
-      <div class="mt-1 text-2xl font-semibold">{{ $blogsCount ?? ($user->blogs->count() ?? 0) }}</div>
+      <div class="text-sm text-gray-600">Bài viết</div>
+      <div class="mt-1 flex items-center justify-between">
+        <div class="text-2xl font-semibold">{{ $blogsCount ?? ($user->blogs->count() ?? 0) }}</div>
+        <a href="{{ route('profile.blogs') }}" class="inline-flex items-center px-3 py-1.5 rounded-md text-white bg-blue-600 hover:bg-blue-700 text-sm">Xem</a>
+      </div>
     </div>
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <div class="text-sm text-gray-600">Tài liệu đã lưu</div>

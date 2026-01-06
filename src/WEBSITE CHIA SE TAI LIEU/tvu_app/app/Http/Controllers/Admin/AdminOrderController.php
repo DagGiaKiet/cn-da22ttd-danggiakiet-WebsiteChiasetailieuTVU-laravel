@@ -8,9 +8,27 @@ use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-	public function index()
+	public function index(Request $request)
 	{
-		$orders = Order::with(['document','user'])->latest()->paginate(20);
+		$query = Order::with(['document','user']);
+
+        if ($request->has('search') && $request->search != '') {
+             $search = $request->search;
+             $query->where('id', 'LIKE', "%{$search}%")
+                   ->orWhereHas('user', function($q) use ($search){
+                       $q->where('name', 'LIKE', "%{$search}%")->orWhere('email', 'LIKE', "%{$search}%");
+                   })
+                   ->orWhereHas('document', function($q) use ($search){
+                       $q->where('ten_tai_lieu', 'LIKE', "%{$search}%");
+                   });
+        }
+
+		$orders = $query->latest()->paginate(20);
+
+        if ($request->ajax()) {
+            return view('admin.orders.table_rows', compact('orders'))->render();
+        }
+
 		return view('admin.orders.index', compact('orders'));
 	}
 

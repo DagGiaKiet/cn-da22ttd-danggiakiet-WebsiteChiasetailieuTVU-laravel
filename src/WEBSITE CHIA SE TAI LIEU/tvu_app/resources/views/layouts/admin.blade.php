@@ -113,7 +113,7 @@
                         Đơn hàng
                     </a>
                     <a href="{{ route('admin.blogs.index') }}" class="px-4 py-2 rounded-full text-sm font-medium transition-all @if(request()->routeIs('admin.blogs.*')) bg-primary text-white @else text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 @endif">
-                        Blogs
+                        Bài Viết
                     </a>
                     <a href="{{ route('admin.categories.index') }}" class="px-4 py-2 rounded-full text-sm font-medium transition-all @if(request()->routeIs('admin.categories.*')) bg-primary text-white @else text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 @endif">
                         Danh mục
