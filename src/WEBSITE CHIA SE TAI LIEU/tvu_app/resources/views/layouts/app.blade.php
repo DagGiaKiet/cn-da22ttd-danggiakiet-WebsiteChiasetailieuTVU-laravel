@@ -203,58 +203,11 @@
                     </div>
 
                     <!-- Chat List -->
-                    <div class="flex-1 overflow-y-auto p-4 space-y-3">
-                        <!-- Example Chat Items (Replace with dynamic data) -->
-                        <a href="#" class="block p-3 rounded-lg hover:bg-white/50 dark:hover:bg-white/10 transition-colors">
-                            <div class="flex gap-3">
-                                <div class="relative shrink-0">
-                                    <div class="size-12 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold">
-                                        LB
-                                    </div>
-                                    <div class="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-white"></div>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <p class="font-semibold text-slate-800 dark:text-white text-sm truncate">Lê Thị Bích</p>
-                                        <span class="text-xs text-slate-500 dark:text-slate-400">5 phút</span>
-                                    </div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400 truncate">Chào bạn, sách này còn không?</p>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-red-500 rounded-full">1</span>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="block p-3 rounded-lg hover:bg-white/50 dark:hover:bg-white/10 transition-colors">
-                            <div class="flex gap-3">
-                                <div class="size-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold shrink-0">
-                                    TH
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <p class="font-semibold text-slate-800 dark:text-white text-sm truncate">Trần Minh Hoàng</p>
-                                        <span class="text-xs text-slate-500 dark:text-slate-400">2 giờ</span>
-                                    </div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400 truncate">Cảm ơn bạn nhiều nhé!</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="block p-3 rounded-lg hover:bg-white/50 dark:hover:bg-white/10 transition-colors">
-                            <div class="flex gap-3">
-                                <div class="size-12 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-white font-bold shrink-0">
-                                    PD
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <p class="font-semibold text-slate-800 dark:text-white text-sm truncate">Phạm Thị Dung</p>
-                                        <span class="text-xs text-slate-500 dark:text-slate-400">Hôm qua</span>
-                                    </div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400 truncate">Bạn có ở gần cổng chính không?</p>
-                                </div>
-                            </div>
-                        </a>
+                    <div id="floatingChatList" class="flex-1 overflow-y-auto p-4 space-y-3">
+                         <div class="flex flex-col items-center justify-center h-full text-slate-500">
+                            <span class="material-symbols-outlined text-4xl mb-2">sync</span>
+                            <p class="text-sm">Đang tải...</p>
+                        </div>
                     </div>
 
                     <!-- View All Button -->
@@ -517,11 +470,78 @@
                 .catch(error => console.error('Error fetching unread messages:', error));
             }
 
+            // Function to update chat list in the modal
+            function updateChatList(conversations) {
+                const container = document.getElementById('floatingChatList');
+                if (!container) return; // Exit if element not found
+
+                if (!conversations || conversations.length === 0) {
+                     container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-full text-slate-500">
+                            <span class="material-symbols-outlined text-4xl mb-2">forum</span>
+                            <p class="text-sm">Chưa có tin nhắn nào</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                conversations.forEach(conv => {
+                    const avatarContent = conv.user.has_avatar 
+                        ? `<img src="${conv.user.avatar}" class="size-12 rounded-full object-cover border border-slate-200 dark:border-slate-700">`
+                        : `<div class="size-12 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold">${conv.user.avatar}</div>`;
+                    
+                    // Use web route for messages
+                    const link = `/messages?user_id=${conv.id}`;
+                    
+                    html += `
+                        <a href="${link}" class="block p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${conv.unread_count > 0 ? 'bg-blue-50 dark:bg-blue-900/10' : ''}">
+                            <div class="flex gap-3">
+                                <div class="relative shrink-0">
+                                    ${avatarContent}
+                                    ${conv.user.online ? '<div class="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-white"></div>' : ''}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="font-semibold text-slate-800 dark:text-white text-sm truncate">${conv.user.name}</p>
+                                        <span class="text-xs text-slate-500 dark:text-slate-400">${conv.time}</span>
+                                    </div>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 truncate ${conv.unread_count > 0 ? 'font-bold text-slate-900 dark:text-white' : ''}">
+                                        ${conv.unread_count > 0 ? '• ' : ''} ${conv.last_message}
+                                    </p>
+                                </div>
+                                ${conv.unread_count > 0 ? `
+                                <div class="flex items-center">
+                                    <span class="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-red-500 rounded-full">${conv.unread_count}</span>
+                                </div>` : ''}
+                            </div>
+                        </a>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            // Function call to fetch conversations
+            function fetchConversations() {
+                 fetch('{{ route('messages.conversations') }}')
+                .then(response => response.json())
+                .then(data => {
+                    if(data.conversations) {
+                        updateChatList(data.conversations);
+                    }
+                })
+                .catch(error => console.error('Error fetching conversations:', error));
+            }
+
             // Initialize message count on page load
             @auth
                 fetchUnreadMessagesCount();
-                // Poll for new messages every 30 seconds
-                setInterval(fetchUnreadMessagesCount, 30000);
+                fetchConversations();
+                // Poll for new messages every 3 seconds
+                setInterval(() => {
+                    fetchUnreadMessagesCount();
+                    fetchConversations();
+                }, 3000);
             @endauth
 
             // Simulate receiving a new message (for demo purposes)

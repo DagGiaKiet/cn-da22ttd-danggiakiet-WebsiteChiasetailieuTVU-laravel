@@ -38,13 +38,25 @@ class CartController extends Controller
 
 	public function checkout(Request $request)
 	{
-		$items = Cart::where('user_id', auth()->id())->get();
+		$items = Cart::with('document')->where('user_id', auth()->id())->get();
+        if ($items->isEmpty()) {
+            return back()->with('error', 'Giỏ hàng trống');
+        }
+
 		foreach ($items as $item) {
+            // Check if document is still available
+            if ($item->document->trang_thai !== 'available') {
+                return back()->with('error', 'Tài liệu "' . $item->document->ten_tai_lieu . '" đã hết hàng. Vui lòng xóa khỏi giỏ hàng.');
+            }
+
 			Order::create([
 				'user_id' => auth()->id(),
 				'document_id' => $item->document_id,
 				'trang_thai' => 'pending',
 			]);
+
+            // Update document status to sold
+            $item->document->update(['trang_thai' => 'sold']);
 		}
 		Cart::where('user_id', auth()->id())->delete();
 		return redirect()->route('orders.index')->with('status', 'Đặt hàng thành công');

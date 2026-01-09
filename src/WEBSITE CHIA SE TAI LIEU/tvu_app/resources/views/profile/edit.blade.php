@@ -11,7 +11,33 @@
       @csrf
       @method('PUT')
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- New Avatar Upload Field -->
+        <div class="col-span-1 md:col-span-2 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+          <label class="block text-sm font-semibold text-gray-800 mb-2">Ảnh đại diện (Avatar)</label>
+          <p class="text-xs text-gray-500 mb-3">Hình ảnh này sẽ hiển thị công khai trên trang cá nhân, bình luận và tin nhắn.</p>
+          <div class="flex items-center space-x-4">
+            <div class="shrink-0">
+               @if($user->avatar)
+                <img class="h-16 w-16 object-cover rounded-full border-2 border-white shadow" src="{{ asset('storage/'.$user->avatar) }}" alt="Avatar" />
+               @else
+                <div class="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 font-bold border-2 border-white shadow">
+                  {{ substr($user->name, 0, 1) }}
+                </div>
+               @endif
+            </div>
+            <div class="flex-1">
+               <input type="file" name="avatar" accept="image/*" class="block w-full text-sm text-slate-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-xs file:font-semibold
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100
+              "/>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label class="block text-sm font-medium text-gray-700">Họ tên</label>
           <input name="name" value="{{ old('name',$user->name) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
@@ -35,9 +61,10 @@
         </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Ảnh thẻ sinh viên</label>
-        <input type="file" name="anh_the" accept="image/*" class="mt-1 block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mt-4">
+        <label class="block text-sm font-semibold text-gray-800 mb-1">Ảnh thẻ sinh viên</label>
+        <p class="text-xs text-red-500 mb-3">* Chỉ hiển thị với bạn và Quản trị viên (Admin) để xác thực.</p>
+        <input type="file" name="anh_the" accept="image/*" class="mt-1 block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300" />
         @if($user->anh_the)
           <div class="mt-2">
             <img src="{{ asset('storage/'.$user->anh_the) }}" alt="Ảnh thẻ" class="w-24 h-24 rounded object-cover border" />

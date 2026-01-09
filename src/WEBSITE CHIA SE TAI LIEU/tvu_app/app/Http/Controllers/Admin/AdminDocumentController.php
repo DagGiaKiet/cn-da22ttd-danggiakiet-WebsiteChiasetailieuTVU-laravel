@@ -7,6 +7,7 @@ use App\Models\Document;
 
 class AdminDocumentController extends Controller
 {
+    // Danh sách tài liệu
 	public function index(\Illuminate\Http\Request $request)
 	{
 		$query = Document::with('user');
@@ -28,6 +29,7 @@ class AdminDocumentController extends Controller
 		return view('admin.documents.index', compact('documents'));
 	}
 
+    // Cập nhật trạng thái tài liệu (Còn hàng / Hết hàng)
     public function updateStatus(\Illuminate\Http\Request $request, Document $document)
     {
         $request->validate([

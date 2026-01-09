@@ -204,6 +204,16 @@
                 const statusText = data.status === 'active' ? 'Hoạt động' : 'Đã khóa';
                 const createdDate = new Date(data.created_at).toLocaleDateString('vi-VN');
                 
+                // Student ID Card Image logic
+                const anhTheHtml = data.anh_the_url 
+                    ? `<div class="col-span-1 mt-1 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-700/40 border border-gray-100 dark:border-gray-600/50">
+                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">badge</span> Ảnh thẻ sinh viên</span>
+                        <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800">
+                            <img src="${data.anh_the_url}" alt="Ảnh thẻ sinh viên" class="w-full h-48 object-contain cursor-pointer transition-transform hover:scale-105" onclick="window.open(this.src, '_blank')" title="Nhấn để xem ảnh gốc">
+                        </div>
+                       </div>` 
+                    : '';
+
                 content.innerHTML = `
                     <div class="grid grid-cols-1 gap-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -241,6 +251,8 @@
                                 ${createdDate}
                             </span>
                         </div>
+
+                        ${anhTheHtml}
                     </div>
                 `;
             })

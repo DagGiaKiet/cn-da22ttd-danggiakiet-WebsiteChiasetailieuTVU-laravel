@@ -34,6 +34,12 @@ class OrderController extends Controller
 		}
 		$order->trang_thai = 'huy';
 		$order->save();
+
+        // Revert document status to available
+        if ($order->document) {
+            $order->document->update(['trang_thai' => 'available']);
+        }
+
 		return back()->with('status', 'Đã hủy đơn hàng');
 	}
 }

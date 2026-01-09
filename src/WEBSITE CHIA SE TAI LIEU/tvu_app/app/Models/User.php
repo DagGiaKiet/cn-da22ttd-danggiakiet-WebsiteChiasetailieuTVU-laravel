@@ -12,7 +12,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * // Các thuộc tính có thể gán hàng loạt.
      *
      * @var array<int, string>
      */
@@ -25,12 +25,13 @@ class User extends Authenticatable
         'khoa',
         'nganh',
         'anh_the',
+        'avatar',
         'role',
-    'status',
+        'status',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * // Các thuộc tính nên được ẩn khi serialize.
      *
      * @var array<int, string>
      */
@@ -40,7 +41,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * // Các thuộc tính nên được ép kiểu.
      *
      * @var array<string, string>
      */
@@ -50,7 +51,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Check if user is admin
+     * // Kiểm tra xem người dùng có phải là admin không
      */
     public function isAdmin()
     {
@@ -59,7 +60,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is active (not locked)
+     * // Kiểm tra xem người dùng có đang hoạt động (không bị khóa)
      */
     public function isActive(): bool
     {
@@ -67,7 +68,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get documents uploaded by user
+     * // Lấy các tài liệu được tải lên bởi người dùng
      */
     public function documents()
     {
@@ -75,7 +76,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get blogs created by user
+     * // Lấy các bài viết (blog) được tạo bởi người dùng
      */
     public function blogs()
     {
@@ -83,7 +84,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get orders made by user
+     * // Lấy các đơn hàng của người dùng
      */
     public function orders()
     {
@@ -91,7 +92,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get cart items
+     * // Lấy các mục trong giỏ hàng
      */
     public function carts()
     {

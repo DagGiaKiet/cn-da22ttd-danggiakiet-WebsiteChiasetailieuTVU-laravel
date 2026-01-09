@@ -60,20 +60,33 @@
     <div class="p-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <div class="w-40 h-40 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-            @if($user->anh_the)
-              <img src="{{ asset('storage/'.$user->anh_the) }}" alt="Ảnh thẻ" class="w-full h-full object-cover">
+          <div class="w-40 h-40 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-4 border-white shadow-lg">
+            @if($user->avatar)
+              <img src="{{ asset('storage/'.$user->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
             @else
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-300" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
+              <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold">
+                  {{ substr($user->name, 0, 1) }}
+              </div>
             @endif
           </div>
+          
           <div class="mt-3">
-            <div class="text-lg font-medium text-gray-900">{{ $user->name }}</div>
+            <div class="text-lg font-bold text-gray-900">{{ $user->name }}</div>
             <div class="text-sm text-gray-500">{{ $user->email }}</div>
             <span class="inline-flex mt-2 items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $user->isAdmin() ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800' }}">
               {{ $user->isAdmin() ? 'Quản trị viên' : 'Thành viên' }}
             </span>
           </div>
+
+          @if($user->anh_the)
+            <div class="mt-6 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <p class="text-xs font-semibold text-slate-700 mb-2 flex items-center">
+                    <span class="material-symbols-outlined text-sm mr-1">badge</span> Ảnh thẻ sinh viên
+                </p>
+                <img src="{{ asset('storage/'.$user->anh_the) }}" alt="Ảnh thẻ" class="w-full h-32 object-contain rounded bg-white border border-slate-100">
+                <p class="text-[10px] text-slate-400 mt-1 italic">* Chỉ hiển thị với bạn và Admin</p>
+            </div>
+          @endif
         </div>
         <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>

@@ -12,6 +12,7 @@ use Carbon\Carbon;
 
 class AdminDashboardController extends Controller
 {
+    // Trang chủ quản trị (Dashboard)
 	public function index()
 	{
 		$users = User::count();
@@ -29,7 +30,7 @@ class AdminDashboardController extends Controller
 		$completedCount = $completedOrders->count();
 		$conversionRate = $ordersCount > 0 ? round($completedCount * 100 / $ordersCount, 0) : 0;
 
-		// Build last 12 months labels and series
+		// Xây dựng nhãn và dữ liệu cho 12 tháng qua
 		$labels = [];
 		$ordersSeries = [];
 		$revenueSeries = [];
@@ -48,7 +49,7 @@ class AdminDashboardController extends Controller
 			});
 
 		foreach ($labels as $idx => $label) {
-			// map back to Y-m key
+			// Ánh xạ lại khóa định dạng Y-m
 			$monthKey = $start->copy()->addMonths($idx)->format('Y-m');
 			$monthOrders = $ordersLastYear->get($monthKey, collect());
 			$ordersSeries[] = $monthOrders->count();
@@ -57,7 +58,7 @@ class AdminDashboardController extends Controller
 			});
 		}
 
-		// Recent activities (last 5 orders)
+		// Hoạt động gần đây (5 đơn hàng mới nhất)
 		$recentOrders = Order::with(['user', 'document'])
 			->latest()
 			->take(5)
@@ -70,11 +71,12 @@ class AdminDashboardController extends Controller
 		));
 	}
 
+    // Thống kê nhanh
     public function stats()
     {
         $orders = Order::with('document')->get();
         $leads = Contact::count();
-        $contactsCount = Contact::count(); // Same as leads for now
+        $contactsCount = Contact::count(); // Hiện tại giống như số lượng lead
 
         $completedOrders = $orders->where('trang_thai', 'da_nhan');
         $revenue = $completedOrders->sum(function ($o) {
@@ -94,6 +96,7 @@ class AdminDashboardController extends Controller
         ]);
     }
 
+    // Tìm kiếm toàn cầu cho phần admin
     public function globalSearch(\Illuminate\Http\Request $request)
     {
         $query = $request->input('query');
@@ -103,7 +106,7 @@ class AdminDashboardController extends Controller
 
         $results = [];
 
-        // 1. Users
+        // 1. Người dùng
         $users = User::where('name', 'LIKE', "%{$query}%")
             ->orWhere('email', 'LIKE', "%{$query}%")
             ->orWhere('ma_sv', 'LIKE', "%{$query}%")
@@ -120,7 +123,7 @@ class AdminDashboardController extends Controller
             ];
         }
 
-        // 2. Documents
+        // 2. Tài liệu
         $documents = Document::where('ten_tai_lieu', 'LIKE', "%{$query}%")
             ->limit(5)
             ->get(['id', 'ten_tai_lieu']);
@@ -135,7 +138,7 @@ class AdminDashboardController extends Controller
             ];
         }
 
-        // 3. Orders (Search by Order ID or User Name)
+        // 3. Đơn hàng (Tìm theo ID hoặc tên người dùng)
         $orders = Order::with('user', 'document')
             ->where('id', 'LIKE', "%{$query}%")
             ->orWhereHas('user', function($q) use ($query) {
@@ -154,7 +157,7 @@ class AdminDashboardController extends Controller
             ];
         }
 
-        // 4. Blogs
+        // 4. Bài viết (Blogs)
         $blogs = Blog::where('tieu_de', 'LIKE', "%{$query}%")
             ->limit(5)
             ->get(['id', 'tieu_de']);

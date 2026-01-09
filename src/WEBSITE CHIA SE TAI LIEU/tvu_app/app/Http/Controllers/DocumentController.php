@@ -31,7 +31,7 @@ class DocumentController extends Controller
 
 	public function store(Request $request)
 	{
-		$data = $request->validate([
+        $rules = [
 			'ten_tai_lieu' => 'required|string|max:255',
 			'mo_ta' => 'nullable|string',
 			'hinh_anh' => 'nullable|image|max:4096',
@@ -39,8 +39,30 @@ class DocumentController extends Controller
 			'loai' => 'required|in:ban,cho',
 			'khoa_id' => 'required|exists:khoas,id',
 			'nganh_id' => 'required|exists:nganhs,id',
-			'mon_id' => 'required|exists:mons,id',
-		]);
+		];
+
+        // Nếu người dùng chọn nhập môn mới (giá trị 'other')
+        if ($request->input('mon_id') === 'other') {
+            $rules['ten_mon_moi'] = 'required|string|max:255';
+        } else {
+            $rules['mon_id'] = 'required|exists:mons,id';
+        }
+
+		$data = $request->validate($rules);
+
+        // Xử lý tạo môn học mới nếu cần
+        if ($request->input('mon_id') === 'other') {
+            // Tạo môn mới theo ngành đã chọn
+            $newMon = Mon::firstOrCreate(
+                ['ten_mon' => $data['ten_mon_moi'], 'nganh_id' => $data['nganh_id']],
+                ['mo_ta' => 'Được tạo bởi người dùng']
+            );
+            $data['mon_id'] = $newMon->id;
+            unset($data['ten_mon_moi']); // Xóa trường tạm
+        } else {
+            // Nếu không phải 'other', đảm bảo mon_id nằm trong data
+            $data['mon_id'] = $request->input('mon_id');
+        }
 
 		// Conditional price rule: if selling, price is required and > 0; if free, force 0
 		if (($data['loai'] ?? 'cho') === 'ban') {

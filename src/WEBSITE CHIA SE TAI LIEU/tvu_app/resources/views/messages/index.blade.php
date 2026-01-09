@@ -18,7 +18,7 @@
                         </div>
                     </label>
                 </div>
-                <div class="flex-1 overflow-y-auto">
+                <div id="conversationsList" class="flex-1 overflow-y-auto">
                     @forelse($conversations as $index => $conversation)
                         @php
                             $isActive = $selectedConversation && $selectedConversation['id'] == $conversation['id'];
@@ -29,9 +29,13 @@
                            class="flex gap-4 px-4 py-3 justify-between cursor-pointer transition-colors {{ $isActive ? 'bg-primary/20 dark:bg-primary/30 border-l-4 border-primary' : 'hover:bg-black/5 dark:hover:bg-white/5' }}">
                             <div class="flex items-center gap-4">
                                 <div class="relative shrink-0">
-                                    <div class="bg-gradient-to-br {{ $colorClass }} rounded-full size-14 flex items-center justify-center text-white font-bold text-sm">
-                                        {{ \App\Models\Message::getInitials($conversation['user']->name) }}
-                                    </div>
+                                    @if($conversation['user']->avatar)
+                                        <img src="{{ asset('storage/' . $conversation['user']->avatar) }}" class="size-14 rounded-full object-cover border border-slate-200 dark:border-slate-700">
+                                    @else
+                                        <div class="bg-gradient-to-br {{ $colorClass }} rounded-full size-14 flex items-center justify-center text-white font-bold text-sm">
+                                            {{ \App\Models\Message::getInitials($conversation['user']->name) }}
+                                        </div>
+                                    @endif
                                     @if($conversation['unread_count'] > 0)
                                         <div class="absolute bottom-0 right-0 size-4 bg-green-500 rounded-full border-2 border-white dark:border-slate-900"></div>
                                     @endif
@@ -68,9 +72,13 @@
                 @if($selectedConversation)
                     <header class="flex items-center justify-between p-4 border-b border-white/20 dark:border-white/10 bg-white/30 dark:bg-black/20 backdrop-blur-md glass-effect">
                         <div class="flex items-center gap-4">
-                            <div class="bg-gradient-to-br from-primary to-blue-600 rounded-full size-12 flex items-center justify-center text-white font-bold text-sm">
-                                {{ \App\Models\Message::getInitials($selectedConversation['user']->name) }}
-                            </div>
+                            @if($selectedConversation['user']->avatar)
+                                <img src="{{ asset('storage/' . $selectedConversation['user']->avatar) }}" class="size-12 rounded-full object-cover border border-slate-200 dark:border-slate-700">
+                            @else
+                                <div class="bg-gradient-to-br from-primary to-blue-600 rounded-full size-12 flex items-center justify-center text-white font-bold text-sm">
+                                    {{ \App\Models\Message::getInitials($selectedConversation['user']->name) }}
+                                </div>
+                            @endif
                             <div class="flex flex-col">
                                 <p class="text-slate-800 dark:text-white text-lg font-semibold leading-normal">{{ $selectedConversation['user']->name }}</p>
                                 <div class="flex items-center gap-2">
@@ -136,9 +144,13 @@
                             @else
                                 <!-- Received Message -->
                                 <div class="flex items-end gap-2 max-w-lg">
-                                    <div class="bg-gradient-to-br from-primary to-blue-600 rounded-full size-8 flex items-center justify-center text-white text-xs font-bold shrink-0 self-end">
-                                        {{ \App\Models\Message::getInitials($message->sender->name) }}
-                                    </div>
+                                    @if($message->sender->avatar)
+                                        <img src="{{ asset('storage/' . $message->sender->avatar) }}" class="size-8 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0 self-end">
+                                    @else
+                                        <div class="bg-gradient-to-br from-primary to-blue-600 rounded-full size-8 flex items-center justify-center text-white text-xs font-bold shrink-0 self-end">
+                                            {{ \App\Models\Message::getInitials($message->sender->name) }}
+                                        </div>
+                                    @endif
                                     <div class="bg-white/70 dark:bg-gray-700/70 p-3 rounded-t-lg rounded-br-lg">
                                         <p class="text-sm text-slate-800 dark:text-white">{{ $message->message }}</p>
                                         <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">{{ $message->created_at->format('H:i') }}</p>
@@ -348,6 +360,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const newMessages = doc.getElementById('messagesContainer');
+                const newConversations = doc.getElementById('conversationsList');
+
+                // Update Conversations Sidebar
+                if (newConversations) {
+                    const conversationsList = document.getElementById('conversationsList');
+                    if (conversationsList && conversationsList.innerHTML !== newConversations.innerHTML) {
+                        // Preserve scroll position
+                        const scrollTop = conversationsList.scrollTop;
+                        conversationsList.innerHTML = newConversations.innerHTML;
+                        conversationsList.scrollTop = scrollTop;
+                    }
+                }
                 
                 if (newMessages) {
                     // Only update if content is different to avoid flicker

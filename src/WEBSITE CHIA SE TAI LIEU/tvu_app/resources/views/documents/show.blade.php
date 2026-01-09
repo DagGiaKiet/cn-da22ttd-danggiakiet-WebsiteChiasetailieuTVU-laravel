@@ -56,13 +56,21 @@
             </div>
 
             <div class="mt-6 flex items-center space-x-3">
-              <form method="POST" action="{{ route('cart.add', $document) }}">
-                @csrf
-                <button class="inline-flex items-center px-5 py-2.5 rounded-md text-white bg-primary hover:bg-primary-700 font-medium">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M7 22a1 1 0 100-2 1 1 0 000 2zm12 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
-                  Thêm vào giỏ
-                </button>
-              </form>
+              @if($document->trang_thai === 'available')
+                  <form method="POST" action="{{ route('cart.add', $document) }}">
+                    @csrf
+                    <button class="inline-flex items-center px-5 py-2.5 rounded-md text-white bg-primary hover:bg-primary-700 font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M7 22a1 1 0 100-2 1 1 0 000 2zm12 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
+                      Thêm vào giỏ
+                    </button>
+                  </form>
+              @else
+                  <button disabled class="inline-flex items-center px-5 py-2.5 rounded-md text-white bg-gray-400 cursor-not-allowed font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                    Hết hàng
+                  </button>
+              @endif
+
               @can('update', $document)
                 <a href="{{ route('documents.edit', $document) }}" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50">Sửa</a>
               @endcan

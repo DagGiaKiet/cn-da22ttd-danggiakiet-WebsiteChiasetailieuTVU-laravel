@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
 {
+    // Danh sách người dùng
 	public function index(Request $request)
 	{
 		$query = User::whereIn('role', ['student','admin']);
@@ -31,7 +32,7 @@ class AdminUserController extends Controller
 	}
 
 	/**
-	 * Update a user's role (admin | student)
+	 * // Cập nhật vai trò người dùng (admin | student)
 	 */
 	public function updateRole(Request $request, User $user)
 	{
@@ -39,7 +40,7 @@ class AdminUserController extends Controller
 			'role' => 'required|in:student,admin',
 		]);
 
-		// Prevent accidentally removing your own admin access
+		// Ngăn chặn việc tự xóa quyền admin của chính mình
 		if (auth()->id() === $user->id && $validated['role'] !== 'admin') {
 			return back()->with('error', 'Bạn không thể tự hạ quyền của chính mình.');
 		}
@@ -50,6 +51,7 @@ class AdminUserController extends Controller
 		return back()->with('success', 'Cập nhật quyền thành công cho người dùng: ' . ($user->name ?? $user->email));
 	}
 
+    // Hiển thị chi tiết người dùng
     public function show(User $user)
     {
         return response()->json([
@@ -57,11 +59,18 @@ class AdminUserController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role,
+            'ma_sv' => $user->ma_sv,
+            'ma_lop' => $user->ma_lop,
+            'khoa' => $user->khoa,
+            'nganh' => $user->nganh,
             'created_at' => $user->created_at->format('d/m/Y H:i'),
             'status' => $user->status ?? 'active',
+            'avatar_url' => $user->avatar ? asset('storage/'.$user->avatar) : null,
+            'anh_the_url' => $user->anh_the ? asset('storage/'.$user->anh_the) : null,
         ]);
     }
 
+    // Chuyển đổi trạng thái (Khóa/Mở khóa)
     public function toggleStatus(User $user)
     {
         $newStatus = ($user->status === 'locked') ? 'active' : 'locked';
@@ -69,6 +78,7 @@ class AdminUserController extends Controller
         return back()->with('success', 'đã cập nhật trạng thái tài khoản thành ' . ($newStatus == 'active' ? 'Hoạt động' : 'Đã khóa'));
     }
 
+    // Đặt lại mật khẩu người dùng
     public function resetPassword(Request $request, User $user)
     {
         $request->validate([

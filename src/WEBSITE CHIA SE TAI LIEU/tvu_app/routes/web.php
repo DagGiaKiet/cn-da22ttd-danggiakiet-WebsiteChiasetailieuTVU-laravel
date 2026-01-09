@@ -25,34 +25,34 @@ use App\Http\Controllers\PublicCategoryController;
 |--------------------------------------------------------------------------
 */
 
-// Public routes - set landing as home
+// Các route công khai - đặt landing page là trang chủ
 Route::get('/', function () {
     return view('landing');
 })->name('home');
-// Contact page (public)
+// Trang liên hệ (công khai)
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
-// Public category pages
+// Các trang danh mục công khai
 Route::view('/danh-muc', 'categories.search')->name('danh-muc');
 Route::view('/categories', 'categories.learn_more')->name('categories.learn-more');
 Route::get('/khoa', [CategoryController::class, 'index'])->name('categories.index');
 
-// Public blog pages: list and detail
+// Các trang blog công khai: danh sách và chi tiết
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
 
-// Public document detail page
+// Trang chi tiết tài liệu công khai
 Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
 
-// Authentication Routes (Laravel UI)
+// Các route xác thực (Laravel UI)
 Auth::routes();
 
-// Protected routes - require authentication
+// Các route được bảo vệ - yêu cầu đăng nhập
 Route::middleware(['auth'])->group(function () {
     
-    // Documents (redirect index to danh-muc)
+    // Tài liệu (chuyển hướng index sang danh mục)
     Route::get('/documents', function(){ return redirect()->route('danh-muc'); })->name('documents.index');
-    // Remove dedicated create page; redirect to search with upload modal open
+    // Xóa trang tạo riêng; chuyển hướng đến trang tìm kiếm với modal upload mở sẵn
     Route::get('/documents/create', function () {
         return redirect()->route('categories.search', ['upload' => 1]);
     })->name('documents.create');
@@ -62,13 +62,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
     
-    // Category browsing
+    // Duyệt danh mục
     Route::get('/categories/khoa/{khoa}', [CategoryController::class, 'showKhoa'])->name('categories.khoa');
     Route::get('/categories/nganh/{nganh}', [CategoryController::class, 'showNganh'])->name('categories.nganh');
     Route::get('/categories/mon/{mon}', [CategoryController::class, 'showMon'])->name('categories.mon');
     
-    // Blogs (auth-required actions only)
-    // Replace standalone create page with redirect to index + modal auto-open
+    // Blogs (chỉ các hành động yêu cầu đăng nhập)
+    // Thay trang tạo riêng bằng redirect đến index + modal tự mở
     Route::get('/blogs/create', function(){ return redirect()->route('blogs.index', ['new' => 1]); })->name('blogs.create');
     Route::post('/blogs', [BlogController::class, 'store'])->name('blogs.store');
     Route::post('/blogs/{blog}/comment', [BlogController::class, 'addComment'])->name('blogs.comment');
@@ -78,18 +78,18 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/blogs/{blog}', [BlogController::class, 'update'])->name('blogs.update');
     Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('blogs.destroy');
     
-    // Cart
+    // Giỏ hàng
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{document}', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{cart}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     
-    // Orders
+    // Đơn hàng
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     
-    // Profile
+    // Hồ sơ cá nhân
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -98,21 +98,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/orders', [ProfileController::class, 'orders'])->name('profile.orders');
     Route::get('/profile/blogs', [ProfileController::class, 'blogs'])->name('profile.blogs');
     Route::get('/profile/saved-blogs', [ProfileController::class, 'savedBlogs'])->name('profile.saved-blogs');
-    // Profile actions similar to admin UX
+    // Các hành động hồ sơ tương tự UX admin
     Route::post('/profile/lock', [ProfileController::class, 'lock'])->name('profile.lock');
     Route::post('/profile/unlock', [ProfileController::class, 'unlock'])->name('profile.unlock');
     Route::post('/profile/orders/{order}/status', [ProfileController::class, 'updateOrderStatus'])->name('profile.orders.update-status');
     
 });
 
-// Admin routes
+// Các route người quản trị (Admin)
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/stats', [AdminDashboardController::class, 'stats'])->name('dashboard.stats');
     Route::get('/global-search', [AdminDashboardController::class, 'globalSearch'])->name('global-search');
     
-    // Users management
+    // Quản lý người dùng
     Route::resource('users', AdminUserController::class);
     Route::resource('contacts', AdminContactController::class)->only(['index', 'destroy']);
     Route::patch('contacts/{contact}/status', [AdminContactController::class, 'updateStatus'])->name('contacts.update-status');
@@ -120,43 +120,43 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::patch('users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.reset-password');
     
-    // Documents management
+    // Quản lý tài liệu
     Route::resource('documents', AdminDocumentController::class);
     Route::post('documents/{document}/status', [AdminDocumentController::class, 'updateStatus'])->name('documents.update-status');
     
-    // Blogs management
+    // Quản lý bài viết (blog)
     Route::resource('blogs', AdminBlogController::class);
     
-    // Orders management
+    // Quản lý đơn hàng
     Route::resource('orders', AdminOrderController::class);
     Route::post('orders/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
     
-    // Categories management (Khoa, Nganh, Mon)
+    // Quản lý danh mục (Khoa, Ngành, Môn)
     Route::get('categories', [AdminCategoryController::class, 'index'])->name('categories.index');
-    // Khoas
+    // Khoa
     Route::get('khoas', [AdminCategoryController::class, 'indexKhoas'])->name('khoas.index');
     Route::post('khoas', [AdminCategoryController::class, 'storeKhoa'])->name('khoas.store');
     Route::delete('khoas/{khoa}', [AdminCategoryController::class, 'destroyKhoa'])->name('khoas.destroy');
-    // Nganhs
+    // Ngành
     Route::get('nganhs', [AdminCategoryController::class, 'indexNganhs'])->name('nganhs.index');
     Route::post('nganhs', [AdminCategoryController::class, 'storeNganh'])->name('nganhs.store');
     Route::delete('nganhs/{nganh}', [AdminCategoryController::class, 'destroyNganh'])->name('nganhs.destroy');
-    // Mons
+    // Môn
     Route::get('mons', [AdminCategoryController::class, 'indexMons'])->name('mons.index');
     Route::post('mons', [AdminCategoryController::class, 'storeMon'])->name('mons.store');
     Route::delete('mons/{mon}', [AdminCategoryController::class, 'destroyMon'])->name('mons.destroy');
     
 });
 
-// Optional route to original app home
+// Route tùy chọn tới trang chủ app gốc
 Route::get('/app', [HomeController::class, 'index'])->name('app.home');
 
-// Landing page based on provided static HTML
+// Trang landing dựa trên HTML tĩnh được cung cấp
 Route::get('/landing', function () {
     return view('landing');
 })->name('landing');
 
-// Public JSON API for cascading selects
+// API JSON công khai cho các select xếp tầng
 Route::prefix('public-api')->group(function () {
     Route::get('/khoas', [PublicCategoryController::class, 'khoas']);
     Route::get('/nganhs', [PublicCategoryController::class, 'nganhs']);
@@ -164,10 +164,11 @@ Route::prefix('public-api')->group(function () {
     Route::get('/documents', [PublicCategoryController::class, 'documents']);
 });
 
-// Messages routes
+// Các route tin nhắn
 Route::middleware(['auth'])->group(function () {
+    Route::get('/messages/conversations', [App\Http\Controllers\MessageController::class, 'conversations'])->name('messages.conversations');
+    Route::get('/messages/unread-count', [App\Http\Controllers\MessageController::class, 'unreadCount'])->name('messages.unread-count');
     Route::get('/messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
     Route::get('/messages/{id}', [App\Http\Controllers\MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages/send', [App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
-    Route::get('/messages/unread-count', [App\Http\Controllers\MessageController::class, 'unreadCount'])->name('messages.unread-count');
 });

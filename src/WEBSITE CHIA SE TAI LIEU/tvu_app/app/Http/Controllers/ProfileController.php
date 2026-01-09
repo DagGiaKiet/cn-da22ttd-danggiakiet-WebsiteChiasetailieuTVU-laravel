@@ -74,21 +74,38 @@ class ProfileController extends Controller
 			'khoa' => 'nullable|string|max:255',
 			'nganh' => 'nullable|string|max:255',
 			'anh_the' => 'nullable|image|max:4096',
-		]);
-		if ($request->hasFile('anh_the')) {
-			$data['anh_the'] = $request->file('anh_the')->store('avatars', 'public');
-		}
-		\App\Models\User::where('id', $userId)->update($data);
-		return redirect()->route('profile.index')->with('success', 'Đã cập nhật hồ sơ');
-	}
+                        'avatar' => 'nullable|image|max:4096',
+                ]);
+                
+                // Handle image uploads
+                if ($request->hasFile('anh_the')) {
+                        $data['anh_the'] = $request->file('anh_the')->store('student_ids', 'public');
+                }
+                
+                if ($request->hasFile('avatar')) {
+                        $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+                }
 
-	public function documents()
-	{
-		$documents = \App\Models\Document::where('user_id', auth()->id())->latest()->paginate(10);
-		return view('profile.documents', compact('documents'));
-	}
+                // Remove null values if files were not uploaded (to avoid overwriting existing paths with null)
+                // However, validate returns key=>null if not present in request but present in rules? 
+                // No, $request->validate returns only validated data. If file not present, it might be null or missing.
+                // We should make sure we don't overwrite if not present.
+                
+                // Actually, if input is file type and not uploaded, $request->file() is null.
+                if (!$request->hasFile('anh_the')) unset($data['anh_the']);
+                if (!$request->hasFile('avatar')) unset($data['avatar']);
 
-	public function savedDocuments()
+                \App\Models\User::where('id', $userId)->update($data);
+                return redirect()->route('profile.index')->with('success', 'Đã cập nhật hồ sơ');
+        }
+
+        public function documents()
+        {
+                $documents = \App\Models\Document::where('user_id', auth()->id())->latest()->paginate(10);
+                return view('profile.documents', compact('documents'));
+        }
+
+        public function savedDocuments()
 	{
 		$user = \App\Models\User::findOrFail(auth()->id());
 		$saved = $user->savedDocuments()->with(['user','khoa','nganh','mon'])->latest('document_saves.created_at')->paginate(10);

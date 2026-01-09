@@ -133,7 +133,8 @@ class MessageController extends Controller
                     'user' => [
                         'name' => $otherUser->name,
                         'email' => $otherUser->email,
-                        'avatar' => \App\Models\Message::getInitials($otherUser->name),
+                        'avatar' => $otherUser->avatar ? asset('storage/' . $otherUser->avatar) : \App\Models\Message::getInitials($otherUser->name),
+                        'has_avatar' => !empty($otherUser->avatar),
                         'online' => false // TODO: Implement online status
                     ],
                     'last_message' => $message->message,

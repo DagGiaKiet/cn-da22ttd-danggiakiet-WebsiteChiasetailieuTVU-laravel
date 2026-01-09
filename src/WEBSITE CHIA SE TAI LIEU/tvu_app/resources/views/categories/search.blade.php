@@ -148,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const upKhoa = document.getElementById('upKhoa');
   const upNganh = document.getElementById('upNganh');
   const upMon = document.getElementById('upMon');
+  const upMonNewDiv = document.getElementById('upMonNewDiv');
+  const upMonNewInput = document.getElementById('upMonNewInput');
 
   let allDocs = [];
   let currentPage = 1;
@@ -380,13 +382,36 @@ document.addEventListener('DOMContentLoaded', function() {
   if (upNganh){
     upNganh.addEventListener('change', ()=>{
       upMon.innerHTML = '<option value="">Chọn môn học</option>';
+      // Reset new mon input
+      if (upMonNewDiv) upMonNewDiv.classList.add('hidden');
+      if (upMonNewInput) { upMonNewInput.removeAttribute('required'); upMonNewInput.value = ''; }
+      
       if (upNganh.value){
         fetch(`${API.mons}?nganh_id=${encodeURIComponent(upNganh.value)}`)
           .then(r=>r.json()).then(list=>{
             list.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=m.ten_mon; upMon.appendChild(o); });
+             // Add "Other" option
+            const otherOpt = document.createElement('option'); 
+            otherOpt.value = 'other'; 
+            otherOpt.textContent = '-- Nhập môn học mới --'; 
+            otherOpt.className = 'text-primary font-medium';
+            upMon.appendChild(otherOpt);
           }).catch(()=>{});
       }
     });
+  }
+  
+  if (upMon) {
+      upMon.addEventListener('change', () => {
+          if (upMon.value === 'other') {
+              if (upMonNewDiv) upMonNewDiv.classList.remove('hidden');
+              if (upMonNewInput) upMonNewInput.setAttribute('required', 'required');
+              if (upMonNewInput) setTimeout(() => upMonNewInput.focus(), 100);
+          } else {
+              if (upMonNewDiv) upMonNewDiv.classList.add('hidden');
+              if (upMonNewInput) { upMonNewInput.removeAttribute('required'); upMonNewInput.value = ''; }
+          }
+      });
   }
 
   function buildParams(){
@@ -559,6 +584,9 @@ document.addEventListener('DOMContentLoaded', function() {
               <select id="upMon" name="mon_id" required class="block w-full h-11 rounded-lg border border-gray-300 bg-white px-3 text-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 <option value="">Chọn môn học</option>
               </select>
+              <div id="upMonNewDiv" class="mt-2 hidden">
+                  <input id="upMonNewInput" name="ten_mon_moi" type="text" placeholder="Nhập tên môn học mới..." class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+              </div>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
